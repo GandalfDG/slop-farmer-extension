@@ -5,5 +5,8 @@
 [node name="GameWindow" type="Node2D"]
 
 [node name="Grid" type="Node2D" parent="."]
-position = Vector2(553, 259)
+position = Vector2(393, 224)
 script = ExtResource("1_mn5vm")
+rows = 4
+cols = 4
+offset = 60.0

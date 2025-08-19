@@ -1,7 +1,9 @@
 extends Node2D
 
-var rows: int = 5
-var cols: int = 5
+@export var rows: int = 5
+@export var cols: int = 5
+
+@export var offset: float = 55.0
 
 var grid: Array
 
@@ -13,5 +15,5 @@ func _ready():
 		for column in cols:
 			var token_node = token.instantiate()
 			add_child(token_node)
-			token_node.position = Vector2(10*row, 10*column)
+			token_node.position = Vector2(offset*row, offset*column)
 			grid[row].append(token_node)
