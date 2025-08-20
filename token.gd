@@ -8,7 +8,7 @@ var color_polygon
 
 func _ready():
 	color_polygon = $Color
-	type = randi_range(0, 3)
+	type = randi_range(0, 3) as token_type
 	match type:
 		token_type.TYPE_1:
 			color_polygon.color = Color.RED
