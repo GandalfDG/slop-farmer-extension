@@ -10,8 +10,10 @@ var debug_label: Label
 func _ready():
 	color_polygon = $Color
 	debug_label = $"Debug Label"
-	type = randi_range(0, 3) as token_type
-	match type:
+			
+func set_type(type: token_type):
+	self.type = type
+	match self.type:
 		token_type.TYPE_1:
 			color_polygon.color = Color.RED
 		token_type.TYPE_2:
