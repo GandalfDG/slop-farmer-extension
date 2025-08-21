@@ -8,15 +8,20 @@ extends Node2D
 var grid: Array[Array]
 var groups: Array
 
+var debug_label: Label
+
 var token = preload("res://token.tscn")
 
 func _ready():
+	debug_label = $"Debug Label"
+	
 	for row in rows:
 		grid.append([])
 		for column in cols:
 			var token_node = token.instantiate()
 			add_child(token_node)
-			token_node.position = Vector2(offset*row, offset*column)
+			token_node.position = Vector2(offset*column, offset*row)
+			token_node.set_debug_label(str(row) + "," + str(column))
 			grid[row].append(token_node)
 			
 	calculate_token_groups()
@@ -64,4 +69,4 @@ func calculate_token_groups():
 						group_queue.append(coord)
 			groups.append(new_group)
 			
-	print(groups)
+	debug_label.text = str(groups)

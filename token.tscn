@@ -1,7 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://b50otusq306jl"]
+[gd_scene load_steps=5 format=3 uid="uid://b50otusq306jl"]
 
 [ext_resource type="Script" uid="uid://cy18iue2caocn" path="res://token.gd" id="1_0ucay"]
 [ext_resource type="Texture2D" uid="uid://cqtw7t2uag6f8" path="res://icon.svg" id="1_bd72f"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0ucay"]
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_bd72f"]
 blend_mode = 1
@@ -9,13 +13,23 @@ blend_mode = 1
 [node name="Token" type="Node2D"]
 script = ExtResource("1_0ucay")
 
+[node name="Debug Label" type="Label" parent="."]
+z_index = 2
+offset_left = 6.0
+offset_top = 3.0
+offset_right = 39.0
+offset_bottom = 41.0
+text = "1,1"
+label_settings = SubResource("LabelSettings_0ucay")
+
+[node name="Color" type="Polygon2D" parent="."]
+z_index = 1
+material = SubResource("CanvasItemMaterial_bd72f")
+position = Vector2(6, 6)
+color = Color(0.84101, 0.000705212, 0.866408, 1)
+polygon = PackedVector2Array(0, 0, 40, 0, 40, 40, 0, 40)
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("1_bd72f")
 centered = false
-
-[node name="Color" type="Polygon2D" parent="."]
-material = SubResource("CanvasItemMaterial_bd72f")
-position = Vector2(6, 6)
-color = Color(3.94672e-06, 0.565612, 0.802131, 1)
-polygon = PackedVector2Array(0, 0, 40, 0, 40, 40, 0, 40)

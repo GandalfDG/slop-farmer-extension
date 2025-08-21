@@ -7,6 +7,11 @@
 [node name="Grid" type="Node2D" parent="."]
 position = Vector2(393, 224)
 script = ExtResource("1_mn5vm")
-rows = 4
-cols = 4
 offset = 60.0
+
+[node name="Debug Label" type="Label" parent="Grid"]
+offset_left = -245.0
+offset_top = -134.0
+offset_right = -16.0
+offset_bottom = -51.0
+autowrap_mode = 1

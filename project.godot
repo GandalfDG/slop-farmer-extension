@@ -10,12 +10,7 @@ config_version=5
 
 [application]
 
-config/name="combo car"
+config/name="combo-car"
 run/main_scene="uid://bai2mcthexgm5"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
-
-[rendering]
-
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
