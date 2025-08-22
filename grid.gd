@@ -2,6 +2,7 @@ extends Node2D
 
 @export var rows: int = 5
 @export var cols: int = 5
+@export var min_group_size: int = 3
 
 @export var offset: float = 55.0
 
@@ -35,7 +36,10 @@ func _on_token_clicked(token_coord):
 	print(str(token_coord) + ", " + str(get_group_of_token(token_coord)))
 	
 func highlight_group(group: Array):
-	pass
+	if group.size() >= min_group_size:
+		for coord in group:
+			var current_token = grid[coord[0]][coord[1]] as Token
+			current_token.queue_free()
 			
 func populate_grid():
 	pass
@@ -82,7 +86,9 @@ func calculate_token_groups():
 				)
 			
 				for coord in valid_coords:
-					if coord not in visited_nodes and grid[coord[0]][coord[1]].type == current_token.type:
+					if (coord not in visited_nodes and
+						grid[coord[0]][coord[1]].type == current_token.type and
+						coord not in group_queue):
 						group_queue.append(coord)
 			groups.append(new_group)
 			
