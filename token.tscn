@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://b50otusq306jl"]
+[gd_scene load_steps=6 format=3 uid="uid://b50otusq306jl"]
 
 [ext_resource type="Script" uid="uid://cy18iue2caocn" path="res://token.gd" id="1_0ucay"]
 [ext_resource type="Texture2D" uid="uid://cqtw7t2uag6f8" path="res://icon.svg" id="1_bd72f"]
@@ -9,6 +9,9 @@ outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_bd72f"]
 blend_mode = 1
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0ucay"]
+size = Vector2(51, 51)
 
 [node name="Token" type="Node2D"]
 script = ExtResource("1_0ucay")
@@ -33,3 +36,11 @@ polygon = PackedVector2Array(0, 0, 40, 0, 40, 40, 0, 40)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("1_bd72f")
 centered = false
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(26, 25.5)
+shape = SubResource("RectangleShape2D_0ucay")
+
+[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]

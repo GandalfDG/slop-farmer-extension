@@ -1,5 +1,7 @@
 extends Node2D
 
+signal token_clicked
+
 enum token_type {TYPE_1, TYPE_2, TYPE_3, TYPE_4}
 
 var type: token_type = token_type.TYPE_1
@@ -25,3 +27,9 @@ func set_type(type: token_type):
 			
 func set_debug_label(text: String):
 	debug_label.text = text
+
+
+func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+#	emit event up to parent on click
+	if Input.is_action_just_pressed("select"):
+		token_clicked.emit()
