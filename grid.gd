@@ -18,17 +18,21 @@ func _ready():
 	for row in rows:
 		grid.append([])
 		for column in cols:
-			var token_node = token.instantiate()
+			var token_node: Token = token.instantiate()
 			add_child(token_node)
 			token_node.position = Vector2(offset*column, offset*row)
 			token_node.set_type(randi_range(0,3 ))
 			token_node.set_debug_label(str(row) + "," + str(column))
+			token_node.token_clicked.connect(_on_token_clicked.bind([row,column]))
 			grid[row].append(token_node)
-			
 	
+	calculate_token_groups()
+			
 func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("activate"):
-		calculate_token_groups()
+	pass
+			
+func _on_token_clicked(token_coord):
+	print(str(token_coord) + ", " + str(get_group_of_token(token_coord)))
 			
 func populate_grid():
 	pass
@@ -80,3 +84,10 @@ func calculate_token_groups():
 			groups.append(new_group)
 			
 	debug_label.text = str(groups)
+
+func get_group_of_token(token_coord) -> Array:
+	for group in groups:
+		if token_coord in group:
+			return group
+			
+	return []
