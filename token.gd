@@ -4,14 +4,18 @@ class_name Token
 signal token_clicked
 
 enum token_type {TYPE_1, TYPE_2, TYPE_3, TYPE_4}
+enum token_state {NONE, HIGHLIGHT}
 
 var type: token_type = token_type.TYPE_1
+var state: token_state = token_state.NONE
 
-var color_polygon
+var color_polygon: Polygon2D
+var highlight_polygon: Polygon2D
 var debug_label: Label
 
 func _ready():
 	color_polygon = $Color
+	highlight_polygon = $highlight_indicator
 	debug_label = $"Debug Label"
 			
 func set_type(type: token_type):
@@ -24,7 +28,7 @@ func set_type(type: token_type):
 		token_type.TYPE_3:
 			color_polygon.color = Color.BLUE
 		token_type.TYPE_4:
-			color_polygon.color = Color.YELLOW
+			color_polygon.color = Color.GOLD
 			
 func set_debug_label(text: String):
 	debug_label.text = text
@@ -34,3 +38,6 @@ func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) 
 #	emit event up to parent on click
 	if Input.is_action_just_pressed("select"):
 		token_clicked.emit()
+		
+func set_highlighted(highlight: bool):
+	state = token_state.HIGHLIGHT if highlight else token_state.NONE

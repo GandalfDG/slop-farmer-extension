@@ -21,7 +21,7 @@ func _ready():
 			var token_node: Token = token.instantiate()
 			add_child(token_node)
 			token_node.position = Vector2(offset*column, offset*row)
-			token_node.set_type(randi_range(0,3 ))
+			token_node.set_type(randi_range(0,3) as Token.token_type)
 			token_node.set_debug_label(str(row) + "," + str(column))
 			token_node.token_clicked.connect(_on_token_clicked.bind([row,column]))
 			grid[row].append(token_node)
@@ -33,6 +33,9 @@ func _process(_delta: float) -> void:
 			
 func _on_token_clicked(token_coord):
 	print(str(token_coord) + ", " + str(get_group_of_token(token_coord)))
+	
+func highlight_group(group: Array):
+	pass
 			
 func populate_grid():
 	pass
