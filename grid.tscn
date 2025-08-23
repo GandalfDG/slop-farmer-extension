@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnfois00347c2"]
+
+[ext_resource type="Script" uid="uid://c1k5pgejmn3bb" path="res://grid.gd" id="1_ebq2e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ebq2e"]
+resource_local_to_scene = true
+
+[node name="Grid" type="Node2D"]
+script = ExtResource("1_ebq2e")
+offset = 60.0
+
+[node name="BoundaryArea" type="Area2D" parent="."]
+
+[node name="BoundaryShape" type="CollisionShape2D" parent="BoundaryArea"]
+shape = SubResource("RectangleShape2D_ebq2e")
+
+[node name="Debug Label" type="Label" parent="."]
+offset_left = -372.0
+offset_top = -206.0
+offset_right = 729.0
+offset_bottom = -123.0
+autowrap_mode = 1
+
+[connection signal="input_event" from="BoundaryArea" to="." method="_on_boundary_area_input_event"]

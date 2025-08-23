@@ -7,11 +7,11 @@
 outline_size = 2
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0ucay"]
-size = Vector2(51, 51)
-
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_bd72f"]
 blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0ucay"]
+blend_mode = 2
 
 [node name="Token" type="Node2D"]
 script = ExtResource("1_0ucay")
@@ -30,12 +30,6 @@ scale = Vector2(0.4, 0.4)
 texture = ExtResource("1_bd72f")
 centered = false
 
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(26, 25.5)
-shape = SubResource("RectangleShape2D_0ucay")
-
 [node name="Color" type="Polygon2D" parent="."]
 material = SubResource("CanvasItemMaterial_bd72f")
 position = Vector2(6, 6)
@@ -43,12 +37,8 @@ color = Color(0.84101, 0.000705212, 0.866408, 1)
 polygon = PackedVector2Array(0, 0, 40, 0, 40, 40, 0, 40)
 
 [node name="highlight_indicator" type="Polygon2D" parent="."]
-visible = false
+material = SubResource("CanvasItemMaterial_0ucay")
 position = Vector2(52.8333, 76.6667)
 scale = Vector2(0.427083, 0.319444)
 polygon = PackedVector2Array(-112, -96, -16, -96, -64, -168)
 uv = PackedVector2Array(-112, -96, -16, -96, -72, -160)
-
-[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
-[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
-[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]

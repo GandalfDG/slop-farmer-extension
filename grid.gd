@@ -7,6 +7,13 @@ class_name Grid
 
 @export var offset: float = 55.0
 
+@onready
+var grid_area: Area2D = $BoundaryArea
+
+@onready
+var grid_shape: CollisionShape2D = $BoundaryArea/BoundaryShape
+
+
 var grid: Array[Array]
 var groups: Array
 var hovered_group: Array
@@ -18,6 +25,9 @@ var token = preload("res://token.tscn")
 func _ready():
 	debug_label = $"Debug Label"
 
+	grid_area.position = Vector2(cols * offset / 2, rows * offset / 2)
+	grid_shape.shape.size = Vector2(cols * offset, rows * offset)
+
 	for row in rows:
 		grid.append([])
 		for column in cols:
@@ -25,35 +35,38 @@ func _ready():
 			add_child(token_node)
 			token_node.set_type(randi_range(0,3) as Token.token_type)
 			token_node.set_debug_label(str(row) + "," + str(column))
-			token_node.token_clicked.connect(_on_token_clicked.bind([row,column]))
 			#token_node.token_hovered.connect(_on_token_hovered.bind([row,column]))
 			grid[row].append(token_node)
 
 	redraw_grid()
+	calculate_token_groups()
 
-func _on_token_clicked(token_coord):
-	var group = get_group_of_token(token_coord)
-	if group.size() >= min_group_size:
-		for coord in group:
-			var current_token = grid[coord[0]][coord[1]] as Token
-			current_token.queue_free()
-			grid[coord[0]][coord[1]] = null # do I actually want a null value or should there be some other placeholder?
+func _process(_delta: float) -> void:
+	clear_highlights()
 
-		update_grid()
+	# get mouse position for hover
+	var mouse_position = self.get_local_mouse_position()
+	if not pixel_within_grid(mouse_position):
+		return
 
-func _on_token_hovered(enter: bool, coord: Array):
-	var group = get_group_of_token(coord)
-	if enter:
-		highlight_group(group, true)
-	else:
-		highlight_group(group, false)
+	var coord_under_mouse = pixel_to_grid_coord(mouse_position)
+	var token_under_mouse: Token = grid[coord_under_mouse[0]][coord_under_mouse[1]]
+
+	if token_under_mouse != null:
+		var group = get_group_of_token(coord_under_mouse)
+		if group.size() >= min_group_size:
+			highlight_group(group, true)
+
+	# if click, determine token clicked
+func pixel_within_grid(coord: Vector2) -> bool:
+	return (coord.x >= 0 and coord.x < cols * offset and
+					coord.y >= 0 and coord.y < rows * offset)
+
+func pixel_to_grid_coord(coord: Vector2) -> Array[int]:
+	return [coord.y / offset, coord.x / offset]
+
 
 func highlight_group(group: Array, enable: bool):
-	if group != hovered_group:
-#		Un-highlight current, update current
-		for coord in hovered_group:
-			var current_token = grid[coord[0]][coord[1]]
-			current_token.set_highlighted(false)
 
 	for coord in group:
 		var current_token = grid[coord[0]][coord[1]] as Token
@@ -61,6 +74,12 @@ func highlight_group(group: Array, enable: bool):
 		current_token.set_highlighted(enable)
 
 	hovered_group = group
+
+func clear_highlights():
+	for row in grid:
+		for token: Token in row:
+			if token != null:
+				token.set_highlighted(false)
 
 func update_grid():
 #	search for empty cells and drop tokens above them down
@@ -82,6 +101,7 @@ func update_grid():
 # search for empty coluns and shift tokens horizontally to fill them
 
 	redraw_grid()
+	calculate_token_groups()
 
 func redraw_grid():
 	for row in range(rows):
@@ -92,7 +112,7 @@ func redraw_grid():
 
 			current_token.position = Vector2(offset*column, offset*row)
 
-	calculate_token_groups()
+
 
 func calculate_token_groups():
 	groups = []
@@ -146,3 +166,17 @@ func get_group_of_token(token_coord) -> Array:
 			return group
 
 	return []
+
+
+func _on_boundary_area_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	if event.is_action_pressed("select"):
+		var position = self.get_local_mouse_position()
+		var token_coord = pixel_to_grid_coord(position)
+		var group = get_group_of_token(token_coord)
+		if group.size() >= min_group_size:
+			for coord in group:
+				var current_token = grid[coord[0]][coord[1]] as Token
+				current_token.queue_free()
+				grid[coord[0]][coord[1]] = null # do I actually want a null value or should there be some other placeholder?
+
+			update_grid()

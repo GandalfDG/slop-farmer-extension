@@ -1,9 +1,6 @@
 extends Node2D
 class_name Token
 
-signal token_clicked
-signal token_hovered(entered: bool)
-
 enum token_type {TYPE_1, TYPE_2, TYPE_3, TYPE_4}
 enum token_state {NONE, HIGHLIGHT}
 
@@ -35,11 +32,6 @@ func set_debug_label(text: String):
 	debug_label.text = text
 
 
-func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-#	emit event up to parent on click
-	if Input.is_action_just_pressed("select"):
-		token_clicked.emit()
-
 func set_highlighted(highlight: bool):
 	state = token_state.HIGHLIGHT if highlight else token_state.NONE
 	match state:
@@ -47,10 +39,3 @@ func set_highlighted(highlight: bool):
 			highlight_polygon.visible = true
 		token_state.NONE:
 			highlight_polygon.visible = false
-
-
-func _on_area_2d_mouse_entered() -> void:
-	token_hovered.emit(true)
-
-func _on_area_2d_mouse_exited() -> void:
-	token_hovered.emit(false)
