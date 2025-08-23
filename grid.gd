@@ -32,9 +32,6 @@ func _ready():
 
 	calculate_token_groups()
 
-func _process(_delta: float) -> void:
-	pass
-
 func _on_token_clicked(token_coord):
 	var group = get_group_of_token(token_coord)
 	if group.size() >= min_group_size:
@@ -66,6 +63,9 @@ func highlight_group(group: Array, enable: bool):
 	hovered_group = group
 
 func update_grid():
+#	search for empty cells and drop tokens above them down
+
+# search for empty coluns and shift tokens horizontally to fill them
 	pass
 
 func populate_grid():
