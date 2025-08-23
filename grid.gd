@@ -34,7 +34,6 @@ func _ready():
 			var token_node: Token = token.instantiate()
 			add_child(token_node)
 			token_node.set_type(randi_range(0,3) as Token.token_type)
-			token_node.set_debug_label(str(row) + "," + str(column))
 			#token_node.token_hovered.connect(_on_token_hovered.bind([row,column]))
 			grid[row].append(token_node)
 
@@ -109,6 +108,8 @@ func redraw_grid():
 			var current_token = grid[row][column]
 			if current_token == null:
 				continue
+
+			current_token.set_debug_label(str(row) + "," + str(column))
 
 			current_token.position = Vector2(offset*column, offset*row)
 
