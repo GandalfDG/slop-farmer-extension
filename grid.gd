@@ -23,14 +23,13 @@ func _ready():
 		for column in cols:
 			var token_node: Token = token.instantiate()
 			add_child(token_node)
-			token_node.position = Vector2(offset*column, offset*row)
 			token_node.set_type(randi_range(0,3) as Token.token_type)
 			token_node.set_debug_label(str(row) + "," + str(column))
 			token_node.token_clicked.connect(_on_token_clicked.bind([row,column]))
-			token_node.token_hovered.connect(_on_token_hovered.bind([row,column]))
+			#token_node.token_hovered.connect(_on_token_hovered.bind([row,column]))
 			grid[row].append(token_node)
 
-	calculate_token_groups()
+	redraw_grid()
 
 func _on_token_clicked(token_coord):
 	var group = get_group_of_token(token_coord)
@@ -58,24 +57,42 @@ func highlight_group(group: Array, enable: bool):
 
 	for coord in group:
 		var current_token = grid[coord[0]][coord[1]] as Token
+		if current_token == null: continue
 		current_token.set_highlighted(enable)
 
 	hovered_group = group
 
 func update_grid():
 #	search for empty cells and drop tokens above them down
+	for column in range(cols):
+		var col_array = []
+		for row in range(rows-1, -1, -1):
+#			create a temporary array from the column
+			col_array.append(grid[row][column])
+
+#		filter the nulls out of the array
+		col_array = col_array.filter(func(token): return token != null)
+
+#		put the filtered column back into the grid
+		for row in range(rows-1, -1, -1):
+			var idx = rows - row - 1
+			grid[row][column] = col_array[idx] if idx < col_array.size() else null
+
 
 # search for empty coluns and shift tokens horizontally to fill them
-	pass
 
-func populate_grid():
-	pass
+	redraw_grid()
 
-func to_grid_coord(idx):
-	pass
+func redraw_grid():
+	for row in range(rows):
+		for column in range(cols):
+			var current_token = grid[row][column]
+			if current_token == null:
+				continue
 
-func to_index(idx):
-	pass
+			current_token.position = Vector2(offset*column, offset*row)
+
+	calculate_token_groups()
 
 func calculate_token_groups():
 	groups = []
@@ -83,7 +100,7 @@ func calculate_token_groups():
 	var group_queue = []
 	for row in rows:
 		for col in cols:
-			if [row, col] in visited_nodes:
+			if [row, col] in visited_nodes or grid[row][col] == null:
 				continue
 
 			group_queue.append([row,col])
@@ -113,9 +130,11 @@ func calculate_token_groups():
 				)
 
 				for coord in valid_coords:
-					if (coord not in visited_nodes and
-						grid[coord[0]][coord[1]].type == current_token.type and
-						coord not in group_queue):
+					var token = grid[coord[0]][coord[1]]
+					if (token != null and
+							coord not in visited_nodes and
+							grid[coord[0]][coord[1]].type == current_token.type and
+							coord not in group_queue):
 						group_queue.append(coord)
 			groups.append(new_group)
 
