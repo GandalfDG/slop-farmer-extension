@@ -43,9 +43,12 @@ color = Color(0.84101, 0.000705212, 0.866408, 1)
 polygon = PackedVector2Array(0, 0, 40, 0, 40, 40, 0, 40)
 
 [node name="highlight_indicator" type="Polygon2D" parent="."]
+visible = false
 position = Vector2(52.8333, 76.6667)
 scale = Vector2(0.427083, 0.319444)
 polygon = PackedVector2Array(-112, -96, -16, -96, -64, -168)
 uv = PackedVector2Array(-112, -96, -16, -96, -72, -160)
 
 [connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
