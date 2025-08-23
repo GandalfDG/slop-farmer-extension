@@ -33,14 +33,21 @@ func _process(_delta: float) -> void:
 	pass
 			
 func _on_token_clicked(token_coord):
-	print(str(token_coord) + ", " + str(get_group_of_token(token_coord)))
-	
-func highlight_group(group: Array):
+	var group = get_group_of_token(token_coord)
 	if group.size() >= min_group_size:
 		for coord in group:
 			var current_token = grid[coord[0]][coord[1]] as Token
 			current_token.queue_free()
+			grid[coord[0]][coord[1]] = null # do I actually want a null value or should there be some other placeholder?
+		
+		update_grid()
+	
+func highlight_group(group: Array):
+	pass
 			
+func update_grid():
+	pass
+	
 func populate_grid():
 	pass
 	
