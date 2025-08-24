@@ -102,13 +102,16 @@ func update_grid():
 			set_token(temp_col[idx], rows - temp_col.size() + idx, col)
 			
 #	search for empty columns and compact horizontally
-	var empty_columns = []
-	for col in range(cols):
-		if grid[col].all(func(token): return token == null):
-			empty_columns.append(col)
-			
-	print(empty_columns)
-			
+	var temp_grid = grid.filter(func(col: Array): return !col.all(func(token): return token == null))
+	
+	var arr = []
+	arr.resize(rows)
+	arr.fill(null)
+	for _i in range(cols - temp_grid.size()):
+		temp_grid.append(arr)
+		
+	grid = temp_grid
+					
 			
 	redraw_grid()
 	calculate_token_groups()
