@@ -98,6 +98,29 @@ func update_grid():
 
 
 # search for empty coluns and shift tokens horizontally to fill them
+	var empty_columns = []
+	for column in range(cols):
+		var col_array = []
+		for row in range(rows):
+			col_array.append(grid[row][column])
+
+		if col_array.all(func(token): return token == null):
+			empty_columns.append(column)
+
+	if empty_columns.size() > 0:
+		var idx = 0
+		var dest_column = 0
+		while idx < cols:
+			if idx in empty_columns:
+				idx += 1
+				continue
+
+			for row in range(rows):
+				grid[row][dest_column] = grid[row][idx]
+			idx += 1
+			dest_column += 1
+
+
 
 	redraw_grid()
 	calculate_token_groups()
