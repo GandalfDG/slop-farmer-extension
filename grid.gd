@@ -93,46 +93,68 @@ func clear_highlights():
 
 func update_grid():
 #	search for empty cells and drop tokens above them down
-	for column in range(cols):
-		var col_array = []
-		for row in range(rows-1, -1, -1):
-#			create a temporary array from the column
-			col_array.append(grid[row][column])
-
-#		filter the nulls out of the array
-		col_array = col_array.filter(func(token): return token != null)
-
-#		put the filtered column back into the grid
-		for row in range(rows-1, -1, -1):
-			var idx = rows - row - 1
-			grid[row][column] = col_array[idx] if idx < col_array.size() else null
-
-
-# search for empty coluns and shift tokens horizontally to fill them
+	var temp_col
+	for col in range(cols):
+		temp_col = grid[col].filter(func(token): return token != null)
+		for idx in range(rows - temp_col.size()):
+			set_token(null, idx, col)
+		for idx in range(temp_col.size()):
+			set_token(temp_col[idx], rows - temp_col.size() + idx, col)
+			
+#	search for empty columns and compact horizontally
 	var empty_columns = []
-	for column in range(cols):
-		var col_array = []
-		for row in range(rows):
-			col_array.append(grid[row][column])
-
-		if col_array.all(func(token): return token == null):
-			empty_columns.append(column)
-
-	if empty_columns.size() > 0:
-		var idx = 0
-		var dest_column = 0
-		while idx < cols:
-			if idx in empty_columns:
-				idx += 1
-				continue
-
-			for row in range(rows):
-				grid[row][dest_column] = grid[row][idx]
-			idx += 1
-			dest_column += 1
-
+	for col in range(cols):
+		if grid[col].all(func(token): return token == null):
+			empty_columns.append(col)
+			
+	print(empty_columns)
+			
+			
 	redraw_grid()
 	calculate_token_groups()
+
+#func donot():
+	#for col in range(cols):
+		#var col_array = []
+		#for row in range(rows-1, -1, -1):
+##			create a temporary array from the column
+			#col_array.append(grid[row])
+#
+##		filter the nulls out of the array
+		#col_array = col_array.filter(func(token): return token != null)
+#
+##		put the filtered column back into the grid
+		#for row in range(rows-1, -1, -1):
+			#var idx = rows - row - 1
+			#grid[row][column] = col_array[idx] if idx < col_array.size() else null
+#
+#
+#
+## search for empty coluns and shift tokens horizontally to fill them
+	#var empty_columns = []
+	#for column in range(cols):
+		#var col_array = []
+		#for row in range(rows):
+			#col_array.append(grid[row][column])
+#
+		#if col_array.all(func(token): return token == null):
+			#empty_columns.append(column)
+#
+	#if empty_columns.size() > 0:
+		#var idx = 0
+		#var dest_column = 0
+		#while idx < cols:
+			#if idx in empty_columns:
+				#idx += 1
+				#continue
+#
+			#for row in range(rows):
+				#grid[row][dest_column] = grid[row][idx]
+			#idx += 1
+			#dest_column += 1
+#
+	#redraw_grid()
+	#calculate_token_groups()
 
 func redraw_grid():
 	for row in range(rows):
@@ -206,7 +228,7 @@ func _on_boundary_area_input_event(viewport: Node, event: InputEvent, shape_idx:
 		var group = get_group_of_token(token_coord)
 		if group.size() >= min_group_size:
 			for coord in group:
-				var current_token = grid[coord[0]][coord[1]] as Token
+				var current_token = get_token(coord[0], coord[1])
 				current_token.queue_free()
 				set_token(null, coord[0], coord[1])# do I actually want a null value or should there be some other placeholder?
 
