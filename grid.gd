@@ -28,14 +28,12 @@ func _ready():
 	grid_area.position = Vector2(cols * offset / 2, rows * offset / 2)
 	grid_shape.shape.size = Vector2(cols * offset, rows * offset)
 
-	for row in rows:
+	for column in cols:
 		grid.append([])
-		for column in cols:
-			var token_node: Token = token.instantiate()
-			add_child(token_node)
-			token_node.set_type(randi_range(0,3) as Token.token_type)
-			#token_node.token_hovered.connect(_on_token_hovered.bind([row,column]))
-			grid[row].append(token_node)
+		for row in rows:
+			grid[column].append(null)
+
+	generate_board()
 
 	redraw_grid()
 	calculate_token_groups()
@@ -49,7 +47,7 @@ func _process(_delta: float) -> void:
 		return
 
 	var coord_under_mouse = pixel_to_grid_coord(mouse_position)
-	var token_under_mouse: Token = grid[coord_under_mouse[0]][coord_under_mouse[1]]
+	var token_under_mouse: Token = get_token(coord_under_mouse[0], coord_under_mouse[1])
 
 	if token_under_mouse != null:
 		var group = get_group_of_token(coord_under_mouse)
@@ -64,11 +62,24 @@ func pixel_within_grid(coord: Vector2) -> bool:
 func pixel_to_grid_coord(coord: Vector2) -> Array[int]:
 	return [coord.y / offset, coord.x / offset]
 
+func get_token(row, col):
+	return grid[col][row]
+
+func set_token(token: Token, row, col):
+	grid[col][row] = token
+
+func generate_board():
+	for row in rows:
+		for column in cols:
+			var token_node: Token = token.instantiate()
+			add_child(token_node)
+			token_node.set_type(randi_range(0,3) as Token.token_type)
+			set_token(token_node, row, column)
 
 func highlight_group(group: Array, enable: bool):
 
 	for coord in group:
-		var current_token = grid[coord[0]][coord[1]] as Token
+		var current_token = get_token(coord[0], coord[1])
 		if current_token == null: continue
 		current_token.set_highlighted(enable)
 
@@ -120,15 +131,13 @@ func update_grid():
 			idx += 1
 			dest_column += 1
 
-
-
 	redraw_grid()
 	calculate_token_groups()
 
 func redraw_grid():
 	for row in range(rows):
 		for column in range(cols):
-			var current_token = grid[row][column]
+			var current_token = get_token(row, column)
 			if current_token == null:
 				continue
 
@@ -136,15 +145,13 @@ func redraw_grid():
 
 			current_token.position = Vector2(offset*column, offset*row)
 
-
-
 func calculate_token_groups():
 	groups = []
 	var visited_nodes = []
 	var group_queue = []
 	for row in rows:
 		for col in cols:
-			if [row, col] in visited_nodes or grid[row][col] == null:
+			if [row, col] in visited_nodes or get_token(row, col) == null:
 				continue
 
 			group_queue.append([row,col])
@@ -152,7 +159,7 @@ func calculate_token_groups():
 			var new_group = []
 			while not group_queue.is_empty():
 				var current_coord = group_queue.pop_back()
-				var current_token = grid[current_coord[0]][current_coord[1]]
+				var current_token = get_token(current_coord[0], current_coord[1])
 				new_group.append(current_coord)
 				visited_nodes.append(current_coord)
 
@@ -174,10 +181,10 @@ func calculate_token_groups():
 				)
 
 				for coord in valid_coords:
-					var token = grid[coord[0]][coord[1]]
+					var token = get_token(coord[0],coord[1])
 					if (token != null and
 							coord not in visited_nodes and
-							grid[coord[0]][coord[1]].type == current_token.type and
+							token.type == current_token.type and
 							coord not in group_queue):
 						group_queue.append(coord)
 			groups.append(new_group)
@@ -201,6 +208,6 @@ func _on_boundary_area_input_event(viewport: Node, event: InputEvent, shape_idx:
 			for coord in group:
 				var current_token = grid[coord[0]][coord[1]] as Token
 				current_token.queue_free()
-				grid[coord[0]][coord[1]] = null # do I actually want a null value or should there be some other placeholder?
+				set_token(null, coord[0], coord[1])# do I actually want a null value or should there be some other placeholder?
 
 			update_grid()
