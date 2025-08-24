@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://b50otusq306jl"]
 
-[ext_resource type="Script" uid="uid://cy18iue2caocn" path="res://token.gd" id="1_0ucay"]
-[ext_resource type="Texture2D" uid="uid://cqtw7t2uag6f8" path="res://icon.svg" id="1_bd72f"]
+[ext_resource type="Script" uid="uid://cy18iue2caocn" path="res://components/scripts/token.gd" id="1_mep5p"]
+[ext_resource type="Texture2D" uid="uid://cqtw7t2uag6f8" path="res://icon.svg" id="2_lcbe8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_0ucay"]
 outline_size = 2
@@ -14,7 +14,7 @@ blend_mode = 1
 blend_mode = 2
 
 [node name="Token" type="Node2D"]
-script = ExtResource("1_0ucay")
+script = ExtResource("1_mep5p")
 
 [node name="Debug Label" type="Label" parent="."]
 z_index = 2
@@ -27,7 +27,7 @@ label_settings = SubResource("LabelSettings_0ucay")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.4, 0.4)
-texture = ExtResource("1_bd72f")
+texture = ExtResource("2_lcbe8")
 centered = false
 
 [node name="Color" type="Polygon2D" parent="."]

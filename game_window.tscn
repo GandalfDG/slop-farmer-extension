@@ -1,8 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://bai2mcthexgm5"]
 
-[ext_resource type="PackedScene" uid="uid://bnfois00347c2" path="res://grid.tscn" id="1_mn5vm"]
+[ext_resource type="PackedScene" uid="uid://bnfois00347c2" path="res://components/grid.tscn" id="1_mn5vm"]
 
 [node name="GameWindow" type="Node2D"]
 
 [node name="Grid" parent="." instance=ExtResource("1_mn5vm")]
 position = Vector2(393, 224)
+min_group_size = 1

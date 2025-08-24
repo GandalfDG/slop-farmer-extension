@@ -20,7 +20,7 @@ var hovered_group: Array
 
 var debug_label: Label
 
-var token = preload("res://token.tscn")
+var token = preload("res://components/token.tscn")
 
 func _ready():
 	debug_label = $"Debug Label"
