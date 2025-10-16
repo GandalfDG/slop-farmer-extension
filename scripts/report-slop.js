@@ -1,9 +1,7 @@
-
-
 function setup_storage_db() {
     /* create indexeddb object store to retain objects in the form of
      * {"domain": "domain.tld",
-     *  "pages": [
+     *  "paths": [
      *      "page/1",
      *      "page/2"  
      *  ]
@@ -42,6 +40,26 @@ function insert_slop(domain, path) {
 
         // is this domain already stored?
         const request = slop_store.get(domain)
+        request.onsuccess = (event) => {
+            let result = request.result
+            if (result) {
+                // domain exists, add this path
+                result.paths.add(path)
+            }
+            
+            else {
+                // create a new domain object
+                const paths_set = new Set()
+                paths_set.add(path)
+                result = {domain: domain, paths: paths_set}
+            }
+
+            // persist to indexeddb
+            const store_request = slop_store.put(result)
+            store_request.onsuccess = (event) => {
+                console.log(domain, path, "stored")
+            }
+        }
     }
 }
 
@@ -52,6 +70,8 @@ async function on_button_clicked_handler() {
 
     const domain = tab_url.hostname
     const path = tab_url.pathname
+
+    insert_slop(domain, path)
 }
 
 browser.runtime.onInstalled.addListener(on_install_handler)
