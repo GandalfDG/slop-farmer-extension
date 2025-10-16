@@ -29,6 +29,25 @@ function on_install_handler() {
     setup_storage_db()
 }
 
+async function get_slop_store(readwrite) {
+
+    const slop_store_promise = new Promise((resolve, reject) => {
+        const db_request = window.indexedDB.open("SlopDB", 1)
+
+        db_request.onsuccess = (event) => {
+            const db = event.target.result
+            const transaction = db.transaction(["slop"], readwrite ? "readwrite" : null)
+            slop_store = transaction.objectStore("slop")
+            resolve(slop_store)
+        }
+        db_request.onerror = (event) => {
+            reject(event)
+        }
+    })
+
+    return await slop_store_promise    
+}
+
 function insert_slop(domain, path) {
     let db
     const db_request = window.indexedDB.open("SlopDB", 1)
@@ -63,10 +82,36 @@ function insert_slop(domain, path) {
     }
 }
 
-async function on_button_clicked_handler() {
+async function check_slop(url) {
+    const slop_url = new URL(url)
+    const slop_store = await get_slop_store(false)
+    const known_slop = new Promise((resolve, reject) => {
+        const request = slop_store.get(slop_url.hostname)
+        request.onsuccess = (event) => {
+            resolve(request.result)
+        }
+        request.onerror = (event) => {
+            reject(event)
+        }
+    })
+
+    slop_object = await known_slop
+    let result = {slop_domain: false, slop_path: false}
+    if (slop_object) {
+        // domain was found
+        result.slop_domain = true
+        if (slop_object.paths.has(slop_url.pathname)) {
+            // specific page was found
+            result.slop_path = true
+        }
+    }
+
+    return result
+}
+
+async function on_button_clicked_handler(tab) {
     // insert the current tab's page into slop storage
-    const current_tab = await browser.tabs.query({active: true})[0]
-    const tab_url = new URL(current_tab.tab)
+    const tab_url = new URL(tab.url)
 
     const domain = tab_url.hostname
     const path = tab_url.pathname
@@ -75,4 +120,4 @@ async function on_button_clicked_handler() {
 }
 
 browser.runtime.onInstalled.addListener(on_install_handler)
-browser.browserAction.onClicked.addListener(on_button_clicked_handler)
+browser.pageAction.onClicked.addListener(on_button_clicked_handler)
