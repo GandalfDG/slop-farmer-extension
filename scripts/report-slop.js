@@ -37,7 +37,7 @@ async function get_slop_store(readwrite) {
         db_request.onsuccess = (event) => {
             const db = event.target.result
             const transaction = db.transaction(["slop"], readwrite ? "readwrite" : undefined)
-            slop_store = transaction.objectStore("slop")
+            const slop_store = transaction.objectStore("slop")
             resolve(slop_store)
         }
         db_request.onerror = (event) => {
@@ -95,7 +95,7 @@ async function check_slop(url) {
         }
     })
 
-    slop_object = await known_slop
+    const slop_object = await known_slop
     let result = {slop_domain: false, slop_path: false}
     if (slop_object) {
         // domain was found
@@ -119,5 +119,11 @@ async function on_button_clicked_handler(tab) {
     insert_slop(domain, path)
 }
 
+async function update_page_action_icon(details) {
+    const is_slop = await check_slop(details.url)
+    console.log(is_slop)
+}
+
 browser.runtime.onInstalled.addListener(on_install_handler)
 browser.pageAction.onClicked.addListener(on_button_clicked_handler)
+browser.webNavigation.onCommitted.addListener(update_page_action_icon)

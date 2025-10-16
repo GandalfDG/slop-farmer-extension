@@ -5,9 +5,16 @@
 
     "description": "Crowd-source AI slop pages and domains",
 
+    "permissions": [
+        "activeTab",
+        "storage",
+        "webNavigation"
+    ],
+
     "page_action": {
         "default_icon": "icons/virus-slash.png",
-        "default_title": "report slop"
+        "default_title": "report slop",
+        "show_matches": ["<all_urls>"]
     },
 
     "background": {
