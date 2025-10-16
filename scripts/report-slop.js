@@ -120,7 +120,28 @@ async function on_button_clicked_handler(tab) {
 }
 
 async function update_page_action_icon(details) {
+    if(details.frameId != 0) {
+        return
+    }
     const is_slop = await check_slop(details.url)
+    if(is_slop.slop_path) {
+        browser.pageAction.setIcon({
+            path: "icons/virus_red.png",
+            tabId: details.tabId
+        })
+    }
+    else if(is_slop.slop_domain) {
+        browser.pageAction.setIcon({
+            path: "icons/virus_yellow.png",
+            tabId: details.tabId
+        })
+    }
+    else {
+        browser.pageAction.setIcon({
+            path: "icons/virus-slash.png",
+            tabId: details.tabId
+        })
+    }
     console.log(is_slop)
 }
 
