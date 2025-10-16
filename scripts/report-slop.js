@@ -36,7 +36,7 @@ async function get_slop_store(readwrite) {
 
         db_request.onsuccess = (event) => {
             const db = event.target.result
-            const transaction = db.transaction(["slop"], readwrite ? "readwrite" : null)
+            const transaction = db.transaction(["slop"], readwrite ? "readwrite" : undefined)
             slop_store = transaction.objectStore("slop")
             resolve(slop_store)
         }
