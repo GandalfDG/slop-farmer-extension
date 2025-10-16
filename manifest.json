@@ -14,5 +14,12 @@
         "scripts": ["scripts/report-slop.js"],
         "persistent": false,
         "type": "module"
-    }
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["*://*.duckduckgo.com/*"],
+            "js": ["scripts/hide-slop.js"]
+        }
+    ]
 }
