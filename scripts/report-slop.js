@@ -84,7 +84,7 @@ function insert_slop(domain, path) {
     }
 }
 
-async function check_slop(url) {
+async function check_local_slop(url) {
     const slop_url = new URL(url)
     const slop_store = await get_slop_store(false)
     const known_slop = new Promise((resolve, reject) => {
@@ -111,6 +111,12 @@ async function check_slop(url) {
     return result
 }
 
+async function check_remote_slop(urls) {
+    const check_url = new URL("check", API_URL)
+    const request = new Request(check_url, {method: "POST", body: JSON.stringify({slop_urls: urls})})
+    const response = await fetch(request)
+}
+
 async function on_button_clicked_handler(tab) {
     // insert the current tab's page into slop storage
     const tab_url = new URL(tab.url)
@@ -125,7 +131,7 @@ async function update_page_action_icon(details) {
     if(details.frameId != 0) {
         return
     }
-    const is_slop = await check_slop(details.url)
+    const is_slop = await check_local_slop(details.url)
     if(is_slop.slop_path) {
         browser.pageAction.setIcon({
             path: "icons/virus_red.png",
@@ -147,13 +153,26 @@ async function update_page_action_icon(details) {
     console.log(is_slop)
 }
 
-async function message_listener(message) {
-    if(message.type === "check") {
+async function message_listener(message, sender) {
+    const tabid = sender.tab.id
+    if (message.type === "check") {
         let check_promises = new Array()
-        message.urls.foreach((url) => {
-            check_promises.push(check_slop(url).then((result) => {
-                browser.tabs.sendMessage({type: "check_result", url: url, result: result})
+        let not_found_local = new Array()
+       
+        message.urls.forEach((url) => {
+            check_promises.push(check_local_slop(url).then(async (result) => {
+                if (result.slop_domain) {
+                    browser.tabs.sendMessage(tabid, { type: "check_result", url: url, result: result })
+                }
+                else {
+                    not_found_local.push(url)
+                }
             }))
+        })
+
+        remote_slop = await check_remote_slop(not_found_local)
+        remote_slop.forEach((result) => {
+            browser.tabs.sendMessage(tabid, { type: "check_result", url: result.url, result: result })
         })
     }
 }
