@@ -9,4 +9,16 @@ async function message_listener(message) {
     }
 }
 
+function onload_handler() {
+    //get links
+    const links = document.querySelectorAll("a[data-testid=\"result-title-a\"")
+    let link_targets = new Array()
+    links.forEach((node) => {
+        link_targets.push(node.getAttribute("href"))
+    })
+    console.log(link_targets)
+    check_links(link_targets)
+}
+
 browser.runtime.onMessage.addListener(message_listener)
+addEventListener("DOMContentLoaded", onload_handler)
