@@ -115,6 +115,9 @@ async function check_remote_slop(urls) {
     const check_url = new URL("check", API_URL)
     const request = new Request(check_url, {method: "POST", body: JSON.stringify({slop_urls: urls})})
     const response = await fetch(request)
+    let domain_objects = await response.json()
+    domain_objects.foreach((domain) => {insert_slop(domain, "/")})
+    return domain_objects
 }
 
 async function on_button_clicked_handler(tab) {
