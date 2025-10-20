@@ -1,4 +1,4 @@
-const API_URL = ""
+const API_URL = "http://localhost:8000"
 
 function setup_storage_db() {
     /* create indexeddb object store to retain objects in the form of
@@ -112,8 +112,8 @@ async function check_local_slop(url) {
 }
 
 async function check_remote_slop(urls) {
-    const check_url = new URL("check", API_URL)
-    const request = new Request(check_url, {method: "POST", body: JSON.stringify({slop_urls: urls})})
+    const check_url = new URL("/check", API_URL)
+    const request = new Request(check_url, {method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({slop_urls: urls})})
     const response = await fetch(request)
     let domain_objects = await response.json()
     domain_objects.foreach((domain) => {insert_slop(domain, "/")})

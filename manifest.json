@@ -8,7 +8,8 @@
     "permissions": [
         "activeTab",
         "storage",
-        "webNavigation"
+        "webNavigation",
+        "*://duckduckgo.com/*"
     ],
 
     "page_action": {
@@ -31,7 +32,7 @@
 
     "content_scripts": [
         {
-            "matches": ["*://*.duckduckgo.com/*"],
+            "matches": ["*://duckduckgo.com/*"],
             "js": ["scripts/hide-slop.js"]
         }
     ]
