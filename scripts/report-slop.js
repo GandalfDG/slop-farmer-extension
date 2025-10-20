@@ -1,3 +1,5 @@
+const API_URL = ""
+
 function setup_storage_db() {
     /* create indexeddb object store to retain objects in the form of
      * {"domain": "domain.tld",
@@ -145,6 +147,18 @@ async function update_page_action_icon(details) {
     console.log(is_slop)
 }
 
+async function message_listener(message) {
+    if(message.type === "check") {
+        let check_promises = new Array()
+        message.urls.foreach((url) => {
+            check_promises.push(check_slop(url).then((result) => {
+                browser.tabs.sendMessage({type: "check_result", url: url, result: result})
+            }))
+        })
+    }
+}
+
 browser.runtime.onInstalled.addListener(on_install_handler)
 browser.pageAction.onClicked.addListener(on_button_clicked_handler)
 browser.webNavigation.onCommitted.addListener(update_page_action_icon)
+browser.runtime.onMessage.addListener(message_listener)

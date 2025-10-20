@@ -17,6 +17,12 @@
         "show_matches": ["<all_urls>"]
     },
 
+    "browser_action": {
+        "default_icon": "icons/virus-slash.png",
+        "default_title": "Slop Farmer",
+        "default_popup": "pages/action_popup.html"
+    },
+
     "background": {
         "scripts": ["scripts/report-slop.js"],
         "persistent": false,
