@@ -116,7 +116,7 @@ async function check_remote_slop(urls) {
     const request = new Request(check_url, {method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({slop_urls: urls})})
     const response = await fetch(request)
     let domain_objects = await response.json()
-    domain_objects.foreach((domain) => {insert_slop(domain, "/")})
+    domain_objects.forEach((domain) => {insert_slop(domain.domain_name, "/")})
     return domain_objects
 }
 
@@ -172,6 +172,8 @@ async function message_listener(message, sender) {
                 }
             }))
         })
+
+        await Promise.all(check_promises)
 
         remote_slop = await check_remote_slop(not_found_local)
         remote_slop.forEach((result) => {
