@@ -9,7 +9,7 @@
         "activeTab",
         "storage",
         "webNavigation",
-        "*://duckduckgo.com/*"
+        "*://*.duckduckgo.com/*"
     ],
 
     "page_action": {
@@ -32,7 +32,7 @@
 
     "content_scripts": [
         {
-            "matches": ["*://duckduckgo.com/*"],
+            "matches": ["*://*.duckduckgo.com/*q=*"],
             "js": ["scripts/hide-slop.js"]
         }
     ]
