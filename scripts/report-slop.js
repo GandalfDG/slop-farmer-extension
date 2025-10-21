@@ -50,7 +50,7 @@ async function get_slop_store(readwrite) {
     return await slop_store_promise    
 }
 
-function insert_slop(domain, path) {
+async function insert_slop(domain, path) {
     let db
     const db_request = window.indexedDB.open("SlopDB", 1)
 
@@ -82,6 +82,10 @@ function insert_slop(domain, path) {
             }
         }
     }
+
+    const report_url = new URL("/report", API_URL)
+    const request = new Request(report_url, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({slop_urls: [new URL(path, "http://"+domain).toString()]})})
+    fetch(request)
 }
 
 async function check_local_slop(url) {
@@ -175,7 +179,7 @@ async function message_listener(message, sender) {
 
         await Promise.all(check_promises)
 
-        remote_slop = await check_remote_slop(not_found_local)
+        let remote_slop = await check_remote_slop(not_found_local)
         remote_slop.forEach((result) => {
             browser.tabs.sendMessage(tabid, { type: "check_result", url: result.url, result: result })
         })

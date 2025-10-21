@@ -8,6 +8,7 @@ const page_links = new Map()
 function check_links(links) {
     // send a message to background script with a list of URLs to check
     browser.runtime.sendMessage({type: "check", urls: links})
+    links.forEach((link) => {page_links.set(link, {checked: true})})
 }
 
 async function message_listener(message) {
@@ -23,12 +24,24 @@ function get_initial_links() {
     links.forEach((node) => {
         page_links.set(node.getAttribute("href"), undefined)
     })
+    const link_targets = page_links.keys().toArray()
     console.log(link_targets)
-    check_links(page_links.keys())
+    check_links(link_targets)
 }
 
 function update_links() {
     // the result list has updated, add new links and check them
+    const links = document.querySelectorAll(ddg_result_selector)
+    links.forEach((node) => {
+        let url = node.getAttribute("href")
+        if (page_links.has(url)) return
+        page_links.set(url, undefined)
+    })
+    const link_arr = page_links.keys().filter((key) => {
+        return !(page_links.get(key))
+    }).toArray()
+
+    check_links(link_arr)
 }
 
 function setup_result_observer() {
