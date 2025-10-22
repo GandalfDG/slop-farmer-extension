@@ -24,7 +24,11 @@ async function message_listener(message) {
     // handle slop reports returned from the background script
     if(message.type === "check_result") {
         console.log(message.url, message.result)
-        page_links.get(message.url).result = message.result
+        const link = page_links.get(message.url)
+        if ( message.result.slop_domain ) {
+            link.node.setAttribute("style", "color: red;")
+        }
+        link.result = message.result
     }
 }
 
