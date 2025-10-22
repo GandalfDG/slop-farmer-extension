@@ -25,9 +25,7 @@
     },
 
     "background": {
-        "scripts": ["scripts/report-slop.js"],
-        "persistent": false,
-        "type": "module"
+        "page": "pages/background_page.html"
     },
 
     "content_scripts": [

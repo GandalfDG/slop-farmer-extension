@@ -1,4 +1,5 @@
 const API_URL = "http://localhost:8000"
+let access_token
 
 function setup_storage_db() {
     /* create indexeddb object store to retain objects in the form of
@@ -186,7 +187,16 @@ async function message_listener(message, sender) {
     }
 }
 
+function get_access_token() {
+    access_token = localStorage.getItem("accessToken")
+    if (!access_token) {
+        // get an access token from the API
+    }
+    return access_token
+}
+
 browser.runtime.onInstalled.addListener(on_install_handler)
+browser.runtime.onStartup.addListener(get_access_token)
 browser.pageAction.onClicked.addListener(on_button_clicked_handler)
 browser.webNavigation.onCommitted.addListener(update_page_action_icon)
 browser.runtime.onMessage.addListener(message_listener)
