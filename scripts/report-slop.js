@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000"
+const API_URL = "https://api.slopfarmer.jack-case.pro"
 let access_token
 
 const login_form = document.getElementById("login-form")

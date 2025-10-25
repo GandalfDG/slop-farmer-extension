@@ -3,6 +3,7 @@
     "name": "Slop Farmer",
     "version": "0.1",
 
+    "author": "Jack Case",
     "description": "Crowd-source AI slop pages and domains",
 
     "permissions": [
