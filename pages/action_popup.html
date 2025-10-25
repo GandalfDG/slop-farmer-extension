@@ -3,15 +3,17 @@
     <meta charset="UTF-8">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <!-- <script async defer src="https://cdn.jsdelivr.net/gh/altcha-org/altcha/dist/altcha.min.js" type="module"></script> -->
+    <script async src="/scripts/report-slop.js" type="module"></script>
+
     <title>Slop Farmer</title>
 </head>
 <body>
     <h1>Hello, world!</h1>
-    <form action="" method="post">
-        <label for="email">email:</label>
-        <input type="email" name="username" required />
-        <label for="password">password:</label>
+    <form id="login-form">
+        <label for="email" id="username">user:</label>
+        <input type="text" name="username" required />
+        <label for="password" id="password">password:</label>
         <input type="password" name="password" required />
-        <input type="submit" value="login" />
+        <button id="login-button">login</button>
     </form>
 </body>

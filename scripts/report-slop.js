@@ -1,6 +1,11 @@
 const API_URL = "http://localhost:8000"
 let access_token
 
+const login_form = document.getElementById("login-form")
+if(login_form) {
+    login_form.addEventListener("submit", (event) => {event.preventDefault(); submit_login_form()})
+}
+
 function setup_storage_db() {
     /* create indexeddb object store to retain objects in the form of
      * {"domain": "domain.tld",
@@ -15,14 +20,17 @@ function setup_storage_db() {
 
     db_request.onerror = (event) => {
         // handle error
+        console.log(event)
     }
 
     db_request.onsuccess = (event) => {
         // create objectstore
+        console.log(event)
         db = event.target.result
     }
 
     db_request.onupgradeneeded = (event) => {
+        console.log(event)
         db = event.target.result
         const slop_store = db.createObjectStore("slop", {keyPath: "domain"})
     }
@@ -85,7 +93,15 @@ async function insert_slop(domain, path) {
     }
 
     const report_url = new URL("/report", API_URL)
-    const request = new Request(report_url, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({slop_urls: [new URL(path, "http://"+domain).toString()]})})
+    const request = new Request(report_url, 
+        {
+            method: "POST", 
+            headers: {
+                "Content-Type": "application/json", 
+                "Bearer": get_access_token()
+            }, 
+            body: JSON.stringify({slop_urls: [new URL(path, "http://"+domain).toString()]})
+        })
     fetch(request)
 }
 
@@ -118,7 +134,7 @@ async function check_local_slop(url) {
 
 async function check_remote_slop(urls) {
     const check_url = new URL("/check", API_URL)
-    const request = new Request(check_url, {method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({slop_urls: urls})})
+    const request = new Request(check_url, {method: "POST", headers: { "Content-Type": "application/json", "Bearer": get_access_token() }, body: JSON.stringify({slop_urls: urls})})
     const response = await fetch(request)
     let domain_objects = await response.json()
     domain_objects.forEach((domain) => {insert_slop(domain.domain_name, "/")})
@@ -195,8 +211,30 @@ function get_access_token() {
     return access_token
 }
 
-browser.runtime.onInstalled.addListener(on_install_handler)
-browser.runtime.onStartup.addListener(get_access_token)
-browser.pageAction.onClicked.addListener(on_button_clicked_handler)
-browser.webNavigation.onCommitted.addListener(update_page_action_icon)
-browser.runtime.onMessage.addListener(message_listener)
+async function submit_login_form() {
+
+    const login_url = new URL("/login", API_URL)
+
+    const request = new Request(login_url, 
+        { 
+            method: "POST", 
+            body: new FormData(login_form)
+        })
+
+    const response = await fetch(request)
+
+    if(response.ok) {
+        const body = await response.json()
+        const token = body.access_token
+        localStorage.setItem("accessToken", token)
+    }
+
+}
+
+if(!login_form) {
+    browser.runtime.onInstalled.addListener(on_install_handler)
+    browser.runtime.onStartup.addListener(get_access_token)
+    browser.pageAction.onClicked.addListener(on_button_clicked_handler)
+    browser.webNavigation.onCommitted.addListener(update_page_action_icon)
+    browser.runtime.onMessage.addListener(message_listener)
+}

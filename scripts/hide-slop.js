@@ -65,9 +65,24 @@ function setup_result_observer() {
     result_list_observer.observe(result_list_node, config)
 }
 
-function onload_handler() {
+async function wait_for_results() {
+    results = new Promise(async (resolve) => {
+        let node = document.querySelector(ddg_result_list_selector)
+        while (!node) {
+            await new Promise((resolve) => {setTimeout(()=>{resolve()}, 100)})
+            node = document.querySelector(ddg_result_list_selector)
+        }
+        resolve(node)
+    })
+
+    return results
+}
+
+async function onload_handler() {
+
+
     // get results ol node to observe
-    result_list_node = document.querySelector(ddg_result_list_selector)
+    result_list_node = await wait_for_results()
 
     get_initial_links()
     setup_result_observer()
@@ -80,5 +95,5 @@ browser.runtime.onMessage.addListener(message_listener)
 if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", onload_handler)
 } else {
-    onload_handler()
+    wait_for_results().then(onload_handler)
 }
