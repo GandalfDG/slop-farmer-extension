@@ -1,10 +1,3 @@
-const ddg_result_selector = "a[data-testid=\"result-title-a\""
-const ddg_result_list_selector = "ol.react-results--main"
-
-let result_list_node
-let result_list_observer
-const page_links = new Map()
-
 class SearchLink {
     constructor(link_node) {
         this.node = link_node
@@ -26,6 +19,11 @@ class ResultLinks extends Map {
             super.get(domain).set(path, search_link)
         }
     }
+
+    setNode(link_node) {
+        const search_link = new SearchLink(link_node)
+        this.set(search_link.url.hostname, search_link.url.pathname, search_link)
+    }
     
     get(domain, path="/") {
         return super.get(domain).get(path)
@@ -39,12 +37,33 @@ class ResultLinks extends Map {
         const urlobj = new URL(url)
         return this.get(urlobj.hostname, urlobj.pathname)
     }
+
+    getSearchLinks() {
+        // return an iterator over the nested SearchLink objects
+        const domain_value_iterator = super.values()
+        const search_link_iterator = domain_value_iterator.flatMap((domain_map) => {
+            return domain_map.values()
+        })
+        return search_link_iterator
+    }
 }
 
-function check_links(links) {
+
+const ddg_result_selector = "a[data-testid=\"result-title-a\""
+const ddg_result_list_selector = "ol.react-results--main"
+
+let result_list_node
+let result_list_observer
+const page_links = new ResultLinks()
+
+
+function check_links(search_links) {
     // send a message to background script with a list of URLs to check
-    browser.runtime.sendMessage({type: "check", urls: links})
-    links.forEach((link) => {page_links.get(link).checked = true})
+    const urls = search_links.map((search_link) => {
+        search_link.checked = true
+        return search_link.target
+    })
+    browser.runtime.sendMessage({type: "check", urls: urls.toArray()})
 }
 
 async function message_listener(message) {
@@ -63,10 +82,9 @@ function get_initial_links() {
     // get links from initial page load
     const links = document.querySelectorAll(ddg_result_selector)
     links.forEach((node) => {
-        const link = new SearchLink(node)
-        page_links.set(link.url.hostname, link)
+        page_links.setNode(node)
     })
-    const link_targets = page_links.keys().toArray()
+    const link_targets = page_links.getSearchLinks()
     check_links(link_targets)
 }
 
@@ -74,15 +92,13 @@ function update_links() {
     // the result list has updated, add new links and check them
     const links = document.querySelectorAll(ddg_result_selector)
     links.forEach((node) => {
-        const link = new SearchLink(node)
-        if (page_links.has(link.target)) return
-        page_links.set(link.url.hostname, link)
+        page_links.setNode(node)
     })
-    const link_arr = page_links.keys().filter((key) => {
-        return !(page_links.get(key).checked)
-    }).toArray()
+    const link_iter = page_links.getSearchLinks().filter((search_link) => {
+        return !(search_link.checked)
+    })
 
-    check_links(link_arr)
+    check_links(link_iter)
 }
 
 function setup_result_observer() {
