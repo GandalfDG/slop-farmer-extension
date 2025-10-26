@@ -69,12 +69,19 @@ function check_links(search_links) {
 async function message_listener(message) {
     // handle slop reports returned from the background script
     if(message.type === "check_result") {
-        console.log(message.url, message.result)
-        const link = page_links.get(message.url)
-        if ( message.result.slop_domain ) {
+        if (message.domain) {
+            const paths = page_links.getDomain(message.domain)
+            paths.forEach((search_link) => {
+                search_link.node.setAttribute("style", "color: red;")
+                search_link.result = message.result
+            })
+        } else if (message.url) {
+            const link = page_links.getUrl(message.url)
             link.node.setAttribute("style", "color: red;")
+            link.result = message.result
         }
-        link.result = message.result
+
+        
     }
 }
 
