@@ -198,7 +198,7 @@ async function message_listener(message, sender) {
 
         let remote_slop = await check_remote_slop(not_found_local)
         remote_slop.forEach((result) => {
-            browser.tabs.sendMessage(tabid, { type: "check_result", url: result.url, result: result })
+            browser.tabs.sendMessage(tabid, { type: "check_result", domain: result.domain_name, result: result })
         })
     }
 }
