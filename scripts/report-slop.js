@@ -3,6 +3,10 @@ let access_token
 
 const login_form = document.getElementById("login-form")
 if(login_form) {
+    const login_status = document.getElementById("login-status")
+    if (localStorage.getItem("accessToken")) {
+        login_status.setAttribute("style", "visibility: visible;")
+    }
     login_form.addEventListener("submit", (event) => {event.preventDefault(); submit_login_form()})
 }
 
@@ -148,7 +152,8 @@ async function on_button_clicked_handler(tab) {
     const domain = tab_url.hostname
     const path = tab_url.pathname
 
-    insert_slop(domain, path)
+    await insert_slop(domain, path)
+    update_page_action_icon({frameId: 0, tabId: tab.id, url: tab.url})
 }
 
 async function update_page_action_icon(details) {
@@ -227,6 +232,8 @@ async function submit_login_form() {
         const body = await response.json()
         const token = body.access_token
         localStorage.setItem("accessToken", token)
+        const status_el = document.getElementById("login-status")
+        status_el.setAttribute("style", "visibility: visible;")
     }
 
 }
