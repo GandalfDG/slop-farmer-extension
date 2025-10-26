@@ -9,8 +9,35 @@ class SearchLink {
     constructor(link_node) {
         this.node = link_node
         this.target = link_node.getAttribute("href")
+        this.url = new URL(link_node.getAttribute("href"))
         this.checked = false
         this.result = undefined
+    }
+}
+
+class ResultLinks extends Map {
+    // map domains to paths and their associated nodes
+    set(domain, path, search_link) {
+        if(!super.get(domain)) {
+            const nested_map = new Map()
+            nested_map.set(path, search_link)
+            super.set(domain, nested_map)
+        } else {
+            super.get(domain).set(path, search_link)
+        }
+    }
+    
+    get(domain, path="/") {
+        return super.get(domain).get(path)
+    }
+
+    getDomain(domain) {
+        return super.get(domain)
+    }
+
+    getUrl(url) {
+        const urlobj = new URL(url)
+        return this.get(urlobj.hostname, urlobj.pathname)
     }
 }
 
@@ -37,7 +64,7 @@ function get_initial_links() {
     const links = document.querySelectorAll(ddg_result_selector)
     links.forEach((node) => {
         const link = new SearchLink(node)
-        page_links.set(link.target, link)
+        page_links.set(link.url.hostname, link)
     })
     const link_targets = page_links.keys().toArray()
     check_links(link_targets)
@@ -49,7 +76,7 @@ function update_links() {
     links.forEach((node) => {
         const link = new SearchLink(node)
         if (page_links.has(link.target)) return
-        page_links.set(link.target, link)
+        page_links.set(link.url.hostname, link)
     })
     const link_arr = page_links.keys().filter((key) => {
         return !(page_links.get(key).checked)
