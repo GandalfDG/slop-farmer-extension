@@ -1,5 +1,12 @@
 class SearchLink {
-    constructor(link_node) {
+
+    node: Element
+    target: string
+    url: URL
+    checked: boolean
+    result: any
+
+    constructor(link_node: Element) {
         this.node = link_node
         this.target = link_node.getAttribute("href")
         this.url = new URL(link_node.getAttribute("href"))
@@ -10,7 +17,7 @@ class SearchLink {
 
 class ResultLinks extends Map {
     // map domains to paths and their associated nodes
-    set(domain, path, search_link) {
+    setLink(domain: string, path: string, search_link: SearchLink) {
         if(!super.get(domain)) {
             const nested_map = new Map()
             nested_map.set(path, search_link)
@@ -20,27 +27,27 @@ class ResultLinks extends Map {
         }
     }
 
-    setNode(link_node) {
+    setNode(link_node: Element) {
         const search_link = new SearchLink(link_node)
-        this.set(search_link.url.hostname, search_link.url.pathname, search_link)
+        this.setLink(search_link.url.hostname, search_link.url.pathname, search_link)
     }
     
-    get(domain, path="/") {
+    get(domain: string, path: string = "/") {
         return super.get(domain).get(path)
     }
 
-    getDomain(domain) {
+    getDomain(domain: string) {
         return super.get(domain)
     }
 
-    getUrl(url) {
+    getUrl(url: string) {
         const urlobj = new URL(url)
         return this.get(urlobj.hostname, urlobj.pathname)
     }
 
     getSearchLinks() {
         // return an iterator over the nested SearchLink objects
-        const domain_value_iterator = super.values()
+        const domain_value_iterator = super.values() as MapIterator<Map<string, SearchLink>>
         const search_link_iterator = domain_value_iterator.flatMap((domain_map) => {
             return domain_map.values()
         })
@@ -52,12 +59,12 @@ class ResultLinks extends Map {
 const ddg_result_selector = "a[data-testid=\"result-title-a\""
 const ddg_result_list_selector = "ol.react-results--main"
 
-let result_list_node
+let result_list_node: Element
 let result_list_observer
 const page_links = new ResultLinks()
 
 
-function check_links(search_links) {
+function check_links(search_links: SearchLink[]) {
     // send a message to background script with a list of URLs to check
     const urls = search_links.map((search_link) => {
         search_link.checked = true
@@ -116,7 +123,7 @@ function setup_result_observer() {
 }
 
 async function wait_for_results() {
-    results = new Promise(async (resolve) => {
+    let results = new Promise(async (resolve) => {
         let node = document.querySelector(ddg_result_list_selector)
         while (!node) {
             await new Promise((resolve) => {setTimeout(()=>{resolve()}, 100)})

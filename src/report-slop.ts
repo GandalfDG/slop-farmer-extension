@@ -1,5 +1,5 @@
-const API_URL = "https://api.slopfarmer.jack-case.pro"
-let access_token
+const API_URL: string = "https://api.slopfarmer.jack-case.pro"
+let access_token: string
 
 const login_form = document.getElementById("login-form")
 if(login_form) {
@@ -44,9 +44,9 @@ function on_install_handler() {
     setup_storage_db()
 }
 
-async function get_slop_store(readwrite) {
+async function get_slop_store(readwrite: boolean) {
 
-    const slop_store_promise = new Promise((resolve, reject) => {
+    const slop_store_promise: Promise<IDBObjectStore> = new Promise((resolve, reject) => {
         const db_request = window.indexedDB.open("SlopDB", 1)
 
         db_request.onsuccess = (event) => {
@@ -63,7 +63,7 @@ async function get_slop_store(readwrite) {
     return await slop_store_promise    
 }
 
-async function insert_slop(domain, path) {
+async function insert_slop(domain: string, path: string) {
     let db
     const db_request = window.indexedDB.open("SlopDB", 1)
 
@@ -90,7 +90,7 @@ async function insert_slop(domain, path) {
 
             // persist to indexeddb
             const store_request = slop_store.put(result)
-            store_request.onsuccess = (event) => {
+            store_request.onsuccess = () => {
                 console.log(domain, path, "stored")
             }
         }
@@ -109,7 +109,7 @@ async function insert_slop(domain, path) {
     fetch(request)
 }
 
-async function check_local_slop(url) {
+async function check_local_slop(url: string) {
     const slop_url = new URL(url)
     const slop_store = await get_slop_store(false)
     const known_slop = new Promise((resolve, reject) => {
@@ -136,16 +136,16 @@ async function check_local_slop(url) {
     return result
 }
 
-async function check_remote_slop(urls) {
+async function check_remote_slop(urls: string[]) {
     const check_url = new URL("/check", API_URL)
     const request = new Request(check_url, {method: "POST", headers: { "Content-Type": "application/json", "Bearer": get_access_token() }, body: JSON.stringify({slop_urls: urls})})
     const response = await fetch(request)
     let domain_objects = await response.json()
-    domain_objects.forEach((domain) => {insert_slop(domain.domain_name, "/")})
+    domain_objects.forEach((domain: any) => {insert_slop(domain.domain_name, "/")})
     return domain_objects
 }
 
-async function on_button_clicked_handler(tab) {
+async function on_button_clicked_handler(tab: Tab) {
     // insert the current tab's page into slop storage
     const tab_url = new URL(tab.url)
 
