@@ -78,7 +78,7 @@ async function message_listener(message) {
     if(message.type === "check_result") {
         if (message.domain) {
             const paths = page_links.getDomain(message.domain)
-            paths.forEach((search_link) => {
+            paths.forEach((search_link: SearchLink) => {
                 search_link.node.setAttribute("style", "color: red;")
                 search_link.result = message.result
             })
@@ -108,7 +108,7 @@ function update_links() {
     links.forEach((node) => {
         page_links.setNode(node)
     })
-    const link_iter = page_links.getSearchLinks().filter((search_link) => {
+    const link_iter = page_links.getSearchLinks().filter((search_link: SearchLink) => {
         return !(search_link.checked)
     })
 
@@ -123,10 +123,10 @@ function setup_result_observer() {
 }
 
 async function wait_for_results() {
-    let results = new Promise(async (resolve) => {
+    let results: Promise<Element> = new Promise(async (resolve) => {
         let node = document.querySelector(ddg_result_list_selector)
         while (!node) {
-            await new Promise((resolve) => {setTimeout(()=>{resolve()}, 100)})
+            await new Promise<void>((resolve) => {setTimeout(()=>{resolve()}, 100)})
             node = document.querySelector(ddg_result_list_selector)
         }
         resolve(node)

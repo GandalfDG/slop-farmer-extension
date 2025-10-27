@@ -112,7 +112,7 @@ async function insert_slop(domain: string, path: string) {
 async function check_local_slop(url: string) {
     const slop_url = new URL(url)
     const slop_store = await get_slop_store(false)
-    const known_slop = new Promise((resolve, reject) => {
+    const known_slop: Promise<any> = new Promise((resolve, reject) => {
         const request = slop_store.get(slop_url.hostname)
         request.onsuccess = (event) => {
             resolve(request.result)
@@ -145,7 +145,7 @@ async function check_remote_slop(urls: string[]) {
     return domain_objects
 }
 
-async function on_button_clicked_handler(tab: Tab) {
+async function on_button_clicked_handler(tab: any) {
     // insert the current tab's page into slop storage
     const tab_url = new URL(tab.url)
 
@@ -156,7 +156,7 @@ async function on_button_clicked_handler(tab: Tab) {
     update_page_action_icon({frameId: 0, tabId: tab.id, url: tab.url})
 }
 
-async function update_page_action_icon(details) {
+async function update_page_action_icon(details: browser.webNavigation._OnCommittedDetails) {
     if(details.frameId != 0) {
         return
     }
@@ -182,7 +182,7 @@ async function update_page_action_icon(details) {
     console.log(is_slop)
 }
 
-async function message_listener(message, sender) {
+async function message_listener(message: any, sender: any) {
     const tabid = sender.tab.id
     if (message.type === "check") {
         let check_promises = new Array()
@@ -202,7 +202,7 @@ async function message_listener(message, sender) {
         await Promise.all(check_promises)
 
         let remote_slop = await check_remote_slop(not_found_local)
-        remote_slop.forEach((result) => {
+        remote_slop.forEach((result: any) => {
             browser.tabs.sendMessage(tabid, { type: "check_result", domain: result.domain_name, result: result })
         })
     }
