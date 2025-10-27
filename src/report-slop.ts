@@ -74,7 +74,7 @@ async function insert_slop(domain: string, path: string) {
 
         // is this domain already stored?
         const request = slop_store.get(domain)
-        request.onsuccess = (event) => {
+        request.onsuccess = () => {
             let result = request.result
             if (result) {
                 // domain exists, add this path
@@ -188,7 +188,7 @@ async function message_listener(message: any, sender: any) {
         let check_promises = new Array()
         let not_found_local = new Array()
        
-        message.urls.forEach((url) => {
+        message.urls.forEach((url: string) => {
             check_promises.push(check_local_slop(url).then(async (result) => {
                 if (result.slop_domain) {
                     browser.tabs.sendMessage(tabid, { type: "check_result", url: url, result: result })

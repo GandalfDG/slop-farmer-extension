@@ -48,7 +48,7 @@ class ResultLinks extends Map {
     getSearchLinks() {
         // return an iterator over the nested SearchLink objects
         const domain_value_iterator = super.values() as MapIterator<Map<string, SearchLink>>
-        const search_link_iterator = domain_value_iterator.flatMap((domain_map) => {
+        const search_link_iterator = domain_value_iterator.flatMap((domain_map: Map<string, SearchLink>) => {
             return domain_map.values()
         })
         return search_link_iterator
@@ -66,14 +66,14 @@ const page_links = new ResultLinks()
 
 function check_links(search_links: SearchLink[]) {
     // send a message to background script with a list of URLs to check
-    const urls = search_links.map((search_link) => {
+    const urls = search_links.map((search_link: SearchLink) => {
         search_link.checked = true
         return search_link.target
     })
-    browser.runtime.sendMessage({type: "check", urls: urls.toArray()})
+    browser.runtime.sendMessage({type: "check", urls: urls})
 }
 
-async function message_listener(message) {
+async function message_listener(message: any) {
     // handle slop reports returned from the background script
     if(message.type === "check_result") {
         if (message.domain) {

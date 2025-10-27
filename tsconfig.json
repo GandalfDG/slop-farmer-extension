@@ -4,6 +4,6 @@
         "outDir": "scripts",
         "noImplicitAny": true,
         "lib": ["ES2020", "DOM"],
-        "inlineSourceMap": true
+        "sourceMap": true
     }
 }
