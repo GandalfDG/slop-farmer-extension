@@ -3,6 +3,7 @@
     "compilerOptions": {
         "outDir": "scripts",
         "noImplicitAny": true,
-        "lib": ["ES2020", "DOM"]
+        "lib": ["ES2020", "DOM"],
+        "inlineSourceMap": true
     }
 }
