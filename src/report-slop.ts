@@ -1,7 +1,7 @@
 const API_URL: string = "https://api.slopfarmer.jack-case.pro"
 let access_token: string
 
-const login_form = document.getElementById("login-form")
+const login_form = document.getElementById("login-form") as HTMLFormElement
 if(login_form) {
     const login_status = document.getElementById("login-status")
     if (localStorage.getItem("accessToken")) {
@@ -153,6 +153,8 @@ async function on_button_clicked_handler(tab: any) {
     const path = tab_url.pathname
 
     await insert_slop(domain, path)
+
+    // @ts-ignore
     update_page_action_icon({frameId: 0, tabId: tab.id, url: tab.url})
 }
 
