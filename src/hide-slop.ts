@@ -47,10 +47,15 @@ class ResultLinks extends Map {
 
     getSearchLinks() {
         // return an iterator over the nested SearchLink objects
-        const domain_value_iterator = super.values() as MapIterator<Map<string, SearchLink>>
-        const search_link_iterator = domain_value_iterator.flatMap((domain_map: Map<string, SearchLink>) => {
+        const domain_value_iterator = super.values() as Iterator<Map<string, SearchLink>>
+        let search_link_iterator: Iterator<SearchLink>
+
+        // didn't realize flatMap was brand new this year
+        // @ts-ignore
+        search_link_iterator = domain_value_iterator.flatMap((domain_map: Map<string, SearchLink>) => {
             return domain_map.values()
         })
+
         return search_link_iterator
     }
 }
@@ -73,7 +78,7 @@ function check_links(search_links: SearchLink[]) {
     browser.runtime.sendMessage({type: "check", urls: urls})
 }
 
-async function message_listener(message: any) {
+async function backend_message_listener(message: any) {
     // handle slop reports returned from the background script
     if(message.type === "check_result") {
         if (message.domain) {
@@ -99,7 +104,8 @@ function get_initial_links() {
         page_links.setNode(node)
     })
     const link_targets = page_links.getSearchLinks()
-    check_links(link_targets)
+    // @ts-ignore
+    check_links(link_targets.toArray())
 }
 
 function update_links() {
@@ -108,6 +114,7 @@ function update_links() {
     links.forEach((node) => {
         page_links.setNode(node)
     })
+    // @ts-ignore
     const link_iter = page_links.getSearchLinks().filter((search_link: SearchLink) => {
         return !(search_link.checked)
     })
@@ -146,7 +153,7 @@ async function onload_handler() {
 }
 
 // listen for messages from the background script
-browser.runtime.onMessage.addListener(message_listener)
+browser.runtime.onMessage.addListener(backend_message_listener)
 
 // initialize state on document load
 if (document.readyState === "loading") {
