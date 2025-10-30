@@ -1,0 +1,10 @@
+{
+    "include": ["src/**/*"],
+    "compilerOptions": {
+        "outDir": "scripts",
+        "noImplicitAny": true,
+        "lib": ["ES7", "DOM"],
+        "sourceMap": true,
+        "target": "esnext"
+    }
+}
