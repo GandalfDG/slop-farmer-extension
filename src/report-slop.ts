@@ -63,7 +63,7 @@ async function get_slop_store(readwrite: boolean) {
     return await slop_store_promise    
 }
 
-async function insert_slop(domain: string, path: string) {
+async function insert_slop(domain: string, path: string, report: boolean = true) {
     let db
     const db_request = window.indexedDB.open("SlopDB", 1)
 
@@ -96,17 +96,19 @@ async function insert_slop(domain: string, path: string) {
         }
     }
 
-    const report_url = new URL("/report", API_URL)
-    const request = new Request(report_url, 
-        {
-            method: "POST", 
-            headers: {
-                "Content-Type": "application/json", 
-                "Bearer": get_access_token()
-            }, 
-            body: JSON.stringify({slop_urls: [new URL(path, "http://"+domain).toString()]})
-        })
-    fetch(request)
+    if(report) {
+        const report_url = new URL("/report", API_URL)
+        const request = new Request(report_url, 
+            {
+                method: "POST", 
+                headers: {
+                    "Content-Type": "application/json", 
+                    "Bearer": get_access_token()
+                }, 
+                body: JSON.stringify({slop_urls: [new URL(path, "http://"+domain).toString()]})
+            })
+        fetch(request)
+    }
 }
 
 async function check_local_slop(url: string) {
@@ -141,7 +143,7 @@ async function check_remote_slop(urls: string[]) {
     const request = new Request(check_url, {method: "POST", headers: { "Content-Type": "application/json", "Bearer": get_access_token() }, body: JSON.stringify({slop_urls: urls})})
     const response = await fetch(request)
     let domain_objects = await response.json()
-    domain_objects.forEach((domain: any) => {insert_slop(domain.domain_name, "/")})
+    domain_objects.forEach((domain: any) => {insert_slop(domain.domain_name, "/", false)})
     return domain_objects
 }
 
