@@ -1,4 +1,4 @@
-import { API_URL } from "common"
+import { API_URL, send_message_to_background } from "common"
 
 const login_form = document.getElementById("login-form") as HTMLFormElement
 const login_status = document.getElementById("login-status")
@@ -22,8 +22,13 @@ async function submit_login_form() {
     if (response.ok) {
         const body = await response.json()
         const token = body.access_token
-        localStorage.setItem("accessToken", token)
+
+        await send_message_to_background({type: "login", token: token})
+
         const status_el = document.getElementById("login-status")
         status_el.setAttribute("style", "visibility: visible;")
+    }
+    else {
+        //bad login, update the form
     }
 }

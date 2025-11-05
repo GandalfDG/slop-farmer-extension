@@ -1,3 +1,5 @@
+import { send_message_to_background } from "common"
+
 class SearchLink {
 
     node: Element
@@ -75,25 +77,27 @@ function check_links(search_links: SearchLink[]) {
         search_link.checked = true
         return search_link.target
     })
-    browser.runtime.sendMessage({type: "check", urls: urls})
+
+    send_message_to_background({type: "check", urls: urls})
 }
 
 async function backend_message_listener(message: any) {
     // handle slop reports returned from the background script
-    if(message.type === "check_result") {
-        if (message.domain) {
-            const paths = page_links.getDomain(message.domain)
-            paths.forEach((search_link: SearchLink) => {
-                search_link.node.setAttribute("style", "color: red;")
-                search_link.result = message.result
-            })
-        } else if (message.url) {
-            const link = page_links.getUrl(message.url)
-            link.node.setAttribute("style", "color: red;")
-            link.result = message.result
-        }
+    switch(message.type) {
+        case ("check-result"): 
+            if (message.domain) {
+                const paths = page_links.getDomain(message.domain)
+                paths.forEach((search_link: SearchLink) => {
+                    search_link.node.setAttribute("style", "color: red;")
+                    search_link.result = message.result
+                })
+            } else if (message.url) {
+                const link = page_links.getUrl(message.url)
+                link.node.setAttribute("style", "color: red;")
+                link.result = message.result
+            }
+            break
 
-        
     }
 }
 

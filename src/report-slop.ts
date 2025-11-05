@@ -21,11 +21,13 @@ function setup_storage_db() {
     db_request.onsuccess = (event) => {
         // create objectstore
         console.log(event)
+        //@ts-ignore
         db = event.target.result
     }
 
     db_request.onupgradeneeded = (event) => {
         console.log(event)
+        //@ts-ignore
         db = event.target.result
         const slop_store = db.createObjectStore("slop", { keyPath: "domain" })
     }
@@ -41,6 +43,7 @@ async function get_slop_store(readwrite: boolean) {
         const db_request = window.indexedDB.open("SlopDB", 1)
 
         db_request.onsuccess = (event) => {
+            //@ts-ignore
             const db = event.target.result
             const transaction = db.transaction(["slop"], readwrite ? "readwrite" : undefined)
             const slop_store = transaction.objectStore("slop")
@@ -59,6 +62,7 @@ async function insert_slop(domain: string, path: string, report: boolean = true)
     const db_request = window.indexedDB.open("SlopDB", 1)
 
     db_request.onsuccess = (event) => {
+        //@ts-ignore
         db = event.target.result
         const transaction = db.transaction(["slop"], "readwrite")
         const slop_store = transaction.objectStore("slop")
@@ -177,29 +181,37 @@ async function update_page_action_icon(details: browser.webNavigation._OnCommitt
     console.log(is_slop)
 }
 
-async function message_listener(message: any, sender: any) {
+async function message_listener(message: any, sender: any, send_response: Function) {
     const tabid = sender.tab.id
-    if (message.type === "check") {
-        let check_promises = new Array()
-        let not_found_local = new Array()
+    switch (message.type) {
+        
+        case "check":
+            let check_promises = new Array()
+            let not_found_local = new Array()
 
-        message.urls.forEach((url: string) => {
-            check_promises.push(check_local_slop(url).then(async (result) => {
-                if (result.slop_domain) {
-                    browser.tabs.sendMessage(tabid, { type: "check_result", url: url, result: result })
-                }
-                else {
-                    not_found_local.push(url)
-                }
-            }))
-        })
+            message.urls.forEach((url: string) => {
+                check_promises.push(check_local_slop(url).then(async (result) => {
+                    if (result.slop_domain) {
+                        browser.tabs.sendMessage(tabid, { type: "check_result", url: url, result: result })
+                    }
+                    else {
+                        not_found_local.push(url)
+                    }
+                }))
+            })
 
-        await Promise.all(check_promises)
+            await Promise.all(check_promises)
 
-        let remote_slop = await check_remote_slop(not_found_local)
-        remote_slop.forEach((result: any) => {
-            browser.tabs.sendMessage(tabid, { type: "check_result", domain: result.domain_name, result: result })
-        })
+            let remote_slop = await check_remote_slop(not_found_local)
+            remote_slop.forEach((result: any) => {
+                browser.tabs.sendMessage(tabid, { type: "check_result", domain: result.domain_name, result: result })
+            })
+            break
+        
+        case "login":
+            localStorage.setItem("accessToken", message.token)
+            send_response(true)
+            break
     }
 }
 
