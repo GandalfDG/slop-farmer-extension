@@ -5,6 +5,7 @@
         "noImplicitAny": true,
         "lib": ["ES7", "DOM"],
         "sourceMap": true,
-        "target": "esnext"
+        "target": "esnext",
+        "baseUrl": "src/"
     }
 }
