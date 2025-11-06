@@ -1,5 +1,3 @@
-let common: any
-
 class SearchLink {
 
     node: Element
@@ -78,7 +76,7 @@ function check_links(search_links: SearchLink[]) {
         return search_link.target
     })
 
-    common.send_message_to_background({type: "check", urls: urls})
+    browser.runtime.sendMessage({type: "check", urls: urls})
 }
 
 async function backend_message_listener(message: any) {
@@ -97,7 +95,6 @@ async function backend_message_listener(message: any) {
                 link.result = message.result
             }
             break
-
     }
 }
 
@@ -156,17 +153,12 @@ async function onload_handler() {
     setup_result_observer()
 }
 
-import("./common.js").then((module) => {
-    common = module
-    // listen for messages from the background script
-    browser.runtime.onMessage.addListener(backend_message_listener)
+// listen for messages from the background script
+browser.runtime.onMessage.addListener(backend_message_listener)
 
-    // initialize state on document load
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", onload_handler)
-    } else {
-        wait_for_results().then(onload_handler)
-    }
-})
-
-
+// initialize state on document load
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", onload_handler)
+} else {
+    wait_for_results().then(onload_handler)
+}
