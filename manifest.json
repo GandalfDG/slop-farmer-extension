@@ -20,13 +20,15 @@
     },
 
     "background": {
-        "scripts": ["scripts/report-slop.js"]
+        "scripts": ["scripts/report-slop.js"],
+        "type": "module"
     },
 
     "content_scripts": [
         {
             "matches": ["*://*.duckduckgo.com/*q=*"],
-            "js": ["scripts/hide-slop.js"]
+            "js": ["scripts/hide-slop.js"],
+            "type":"module"
         }
     ]
 }

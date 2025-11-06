@@ -1,4 +1,4 @@
-import { API_URL, send_message_to_background } from "common"
+import { API_URL, send_message_to_background } from "./common.js"
 
 const login_form = document.getElementById("login-form") as HTMLFormElement
 const login_status = document.getElementById("login-status")

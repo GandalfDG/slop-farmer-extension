@@ -6,6 +6,7 @@
         "lib": ["ES7", "DOM"],
         "sourceMap": true,
         "target": "esnext",
-        "baseUrl": "src/"
+        "baseUrl": "src/",
+        "module": "esnext"
     }
 }

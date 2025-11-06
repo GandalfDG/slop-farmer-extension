@@ -1,4 +1,4 @@
-import { API_URL } from "common"
+import { API_URL } from "./common.js"
 let access_token: string
 
 function setup_storage_db() {
@@ -182,10 +182,10 @@ async function update_page_action_icon(details: browser.webNavigation._OnCommitt
 }
 
 async function message_listener(message: any, sender: any, send_response: Function) {
-    const tabid = sender.tab.id
     switch (message.type) {
         
         case "check":
+            const tabid = sender.tab.id
             let check_promises = new Array()
             let not_found_local = new Array()
 
@@ -226,6 +226,5 @@ function get_access_token() {
 
 browser.runtime.onInstalled.addListener(on_install_handler)
 browser.runtime.onStartup.addListener(get_access_token)
-browser.pageAction.onClicked.addListener(on_button_clicked_handler)
 browser.webNavigation.onCommitted.addListener(update_page_action_icon)
 browser.runtime.onMessage.addListener(message_listener)

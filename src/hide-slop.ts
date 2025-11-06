@@ -1,4 +1,4 @@
-import { send_message_to_background } from "common"
+let common: any
 
 class SearchLink {
 
@@ -78,7 +78,7 @@ function check_links(search_links: SearchLink[]) {
         return search_link.target
     })
 
-    send_message_to_background({type: "check", urls: urls})
+    common.send_message_to_background({type: "check", urls: urls})
 }
 
 async function backend_message_listener(message: any) {
@@ -156,12 +156,17 @@ async function onload_handler() {
     setup_result_observer()
 }
 
-// listen for messages from the background script
-browser.runtime.onMessage.addListener(backend_message_listener)
+import("./common.js").then((module) => {
+    common = module
+    // listen for messages from the background script
+    browser.runtime.onMessage.addListener(backend_message_listener)
 
-// initialize state on document load
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", onload_handler)
-} else {
-    wait_for_results().then(onload_handler)
-}
+    // initialize state on document load
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", onload_handler)
+    } else {
+        wait_for_results().then(onload_handler)
+    }
+})
+
+
