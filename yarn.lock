@@ -2,10 +2,29 @@
 # yarn lockfile v1
 
 
+"@altcha/crypto@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@altcha/crypto/-/crypto-0.0.1.tgz#0e2f254559fb350c80ff56d29b8e3ab2e6bbea95"
+  integrity sha512-qZMdnoD3lAyvfSUMNtC2adRi666Pxdcw9zqfMU5qBOaJWqpN9K+eqQGWqeiKDMqL0SF+EytNG4kR/Pr/99GJ6g==
+
+"@rollup/rollup-linux-x64-gnu@4.18.0":
+  version "4.18.0"
+  resolved "https://registry.yarnpkg.com/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.18.0.tgz#1a7481137a54740bee1ded4ae5752450f155d942"
+  integrity sha512-xuglR2rBVHA5UsI8h8UbX4VJ470PtGCf5Vpswh7p2ukaqBGFTnsfzxUBetoWBWymHMxbIG0Cmx7Y9qDZzr648w==
+
 "@types/firefox-webext-browser@^143.0.0":
   version "143.0.0"
   resolved "https://registry.yarnpkg.com/@types/firefox-webext-browser/-/firefox-webext-browser-143.0.0.tgz#29413c9f393d4c4b5622d4a74182ff0219e98620"
   integrity sha512-865dYKMOP0CllFyHmgXV4IQgVL51OSQQCwSoihQ17EwugePKFSAZRc0EI+y7Ly4q7j5KyURlA7LgRpFieO4JOw==
+
+altcha@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/altcha/-/altcha-2.2.4.tgz#e89d9e6fbdf3a754e40a458f0f353b6dd495a5b2"
+  integrity sha512-UrU2izh1pISqzd7TCAJiJB2N+r7roqA348Qxt1gJlW5k9pJpbDDmMcDaxfuet9h/WFE6Snrritu/WusmERarrg==
+  dependencies:
+    "@altcha/crypto" "^0.0.1"
+  optionalDependencies:
+    "@rollup/rollup-linux-x64-gnu" "4.18.0"
 
 typescript@^5.9.3:
   version "5.9.3"

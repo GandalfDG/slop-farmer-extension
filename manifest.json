@@ -13,6 +13,8 @@
         "*://*.duckduckgo.com/*"
     ],
 
+    "content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; worker-src 'self' blob:",
+
     "browser_action": {
         "default_icon": "icons/virus-slash.png",
         "default_title": "Slop Farmer",

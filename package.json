@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@types/firefox-webext-browser": "^143.0.0",
+    "altcha": "^2.2.4",
     "typescript": "^5.9.3"
   }
 }
