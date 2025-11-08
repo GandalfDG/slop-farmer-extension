@@ -82,7 +82,7 @@ function check_links(search_links: SearchLink[]) {
 async function backend_message_listener(message: any) {
     // handle slop reports returned from the background script
     switch(message.type) {
-        case ("check-result"): 
+        case ("check_result"): 
             if (message.domain) {
                 const paths = page_links.getDomain(message.domain)
                 paths.forEach((search_link: SearchLink) => {
@@ -120,7 +120,7 @@ function update_links() {
         return !(search_link.checked)
     })
 
-    check_links(link_iter)
+    check_links(link_iter.toArray())
 }
 
 function setup_result_observer() {
