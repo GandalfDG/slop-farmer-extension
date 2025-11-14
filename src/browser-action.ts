@@ -10,6 +10,7 @@ class PopupState {
         this.logged_in = logged_in
         this.page_sections = page_sections
         this.visible_section = visible_section
+        this.setVisibleSection(visible_section)
     }
 
     setVisibleSection(section_id: string) {
@@ -19,14 +20,6 @@ class PopupState {
         })
     }
 }
-
-if (localStorage.getItem("accessToken")) {
-    login_status.setAttribute("style", "visibility: visible;")
-}
-
-login_form.addEventListener("submit", (event) => { event.preventDefault(); submit_login_form() })
-
-signup_form.addEventListener("submit", (event) => { event.preventDefault(); submit_signup_form() })
 
 async function submit_login_form() {
 
@@ -84,5 +77,13 @@ function initialize_popup() {
     page_sections.set("login", login_section)
     page_sections.set("report", report_section)
 
-    const popup_state = new PopupState(false, page_sections, "signup_section")
+    const popup_state = new PopupState(false, page_sections, "signup")
+
+    login_form.addEventListener("submit", (event) => { event.preventDefault(); submit_login_form() })
+
+    signup_form.addEventListener("submit", (event) => { event.preventDefault(); submit_signup_form() })
 }
+
+addEventListener("DOMContentLoaded", (event) => {
+    initialize_popup()
+})
