@@ -1,10 +1,5 @@
 import { API_URL, send_message_to_background } from "./common.js"
 
-const login_form = document.getElementById("login-form") as HTMLFormElement
-const login_status = document.getElementById("login-status")
-
-const signup_form = document.getElementById("signup-form") as HTMLFormElement
-
 class PopupState {
     logged_in: boolean
 
@@ -73,4 +68,21 @@ async function submit_signup_form() {
     if (response.ok) {
         
     }
+}
+
+function initialize_popup() {
+    const login_form = document.getElementById("login-form") as HTMLFormElement
+    const login_status = document.getElementById("login-status")
+    const signup_form = document.getElementById("signup-form") as HTMLFormElement
+
+    const signup_section = document.getElementById("signup")
+    const login_section = document.getElementById("login")
+    const report_section = document.getElementById("report")
+
+    const page_sections = new Map()
+    page_sections.set("signup", signup_section)
+    page_sections.set("login", login_section)
+    page_sections.set("report", report_section)
+
+    const popup_state = new PopupState(false, page_sections, "signup_section")
 }
