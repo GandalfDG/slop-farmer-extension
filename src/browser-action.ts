@@ -1,16 +1,21 @@
 import { API_URL, send_message_to_background } from "./common.js"
 
+let popup_state: PopupState = null
+
 class PopupState {
     logged_in: boolean
 
     visible_section: string
     page_sections: Map<string, HTMLElement>
 
-    constructor(logged_in: boolean, page_sections: Map<string, HTMLElement>, visible_section: string) {
+    page_elements: Map<string, HTMLElement>
+
+    constructor(logged_in: boolean, page_sections: Map<string, HTMLElement>, visible_section: string, page_elements: Map<string, HTMLElement>) {
         this.logged_in = logged_in
         this.page_sections = page_sections
         this.visible_section = visible_section
         this.setVisibleSection(visible_section)
+        this.page_elements = page_elements
     }
 
     setVisibleSection(section_id: string) {
@@ -28,7 +33,7 @@ async function submit_login_form() {
     const request = new Request(login_url,
         {
             method: "POST",
-            body: new FormData(login_form)
+            body: new FormData(popup_state.page_elements.get("login_form") as HTMLFormElement)
         })
 
     const response = await fetch(request)
@@ -52,7 +57,7 @@ async function submit_signup_form() {
 
     const request = new Request(signup_url, {
         method: "POST",
-        body: new FormData(signup_form)
+        body: new FormData(popup_state.page_elements.get("signup_form") as HTMLFormElement)
     })
 
     const response = await fetch(request)
@@ -72,16 +77,26 @@ function initialize_popup() {
     const login_section = document.getElementById("login")
     const report_section = document.getElementById("report")
 
+    const signup_button = document.getElementById("signup-select") as HTMLButtonElement
+    const login_button = document.getElementById("login-select") as HTMLButtonElement
+
     const page_sections = new Map()
     page_sections.set("signup", signup_section)
     page_sections.set("login", login_section)
     page_sections.set("report", report_section)
 
-    const popup_state = new PopupState(false, page_sections, "signup")
+    const page_elements = new Map()
+    page_elements.set("login_form", login_form as HTMLElement)
+    page_elements.set("login_status", login_status)
+    page_elements.set("signup_form", signup_form as HTMLElement)
+
+    popup_state = new PopupState(false, page_sections, "signup", page_elements)
 
     login_form.addEventListener("submit", (event) => { event.preventDefault(); submit_login_form() })
-
     signup_form.addEventListener("submit", (event) => { event.preventDefault(); submit_signup_form() })
+
+    signup_button.addEventListener("click", (event) => {popup_state.setVisibleSection("signup")})
+    login_button.addEventListener("click", (event) => {popup_state.setVisibleSection("login")})
 }
 
 addEventListener("DOMContentLoaded", (event) => {
