@@ -212,6 +212,11 @@ async function message_listener(message: any, sender: any, send_response: Functi
             localStorage.setItem("accessToken", message.token)
             send_response(true)
             break
+
+        case "islogged":
+            const token = get_access_token()
+            send_response(token ? true : false)
+            break
     }
 }
 

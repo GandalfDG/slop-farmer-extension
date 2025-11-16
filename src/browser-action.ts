@@ -14,7 +14,7 @@ class PopupState {
         this.logged_in = logged_in
         this.page_sections = page_sections
         this.visible_section = visible_section
-        this.setVisibleSection(visible_section)
+        this.setVisibleSection(logged_in ? "report" : "signup")
         this.page_elements = page_elements
     }
 
@@ -68,7 +68,13 @@ async function submit_signup_form() {
     }
 }
 
-function initialize_popup() {
+async function check_login(): Promise<boolean> {
+    const response = await send_message_to_background({type: "islogged"})
+    response.json
+}
+
+
+async function initialize_popup() {
     const login_form = document.getElementById("login-form") as HTMLFormElement
     const login_status = document.getElementById("login-status")
     const signup_form = document.getElementById("signup-form") as HTMLFormElement
@@ -90,7 +96,9 @@ function initialize_popup() {
     page_elements.set("login_status", login_status)
     page_elements.set("signup_form", signup_form as HTMLElement)
 
-    popup_state = new PopupState(false, page_sections, "signup", page_elements)
+    const logged_in = await check_login()
+
+    popup_state = new PopupState(logged_in, page_sections, "signup", page_elements)
 
     login_form.addEventListener("submit", (event) => { event.preventDefault(); submit_login_form() })
     signup_form.addEventListener("submit", (event) => { event.preventDefault(); submit_signup_form() })
