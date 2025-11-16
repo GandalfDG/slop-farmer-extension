@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Slop Farmer",
-    "version": "0.3",
+    "version": "0.4",
 
     "author": "Jack Case",
     "description": "Crowd-source AI slop pages and domains",
@@ -18,7 +18,20 @@
     "browser_action": {
         "default_icon": "icons/virus-slash.png",
         "default_title": "Slop Farmer",
-        "default_popup": "pages/action_popup.html"
+        "default_popup": "pages/action_popup.html",
+        "default_area": "navbar",
+        "theme_icons": [
+            {
+                "dark": "icons/virus_white_16.png",
+                "light": "icons/virus_black_16.png",
+                "size": 16
+            },
+            {
+                "dark": "icons/virus_white_32.png",
+                "light": "icons/virus_black_32.png",
+                "size": 32
+            }
+        ]
     },
 
     "background": {
