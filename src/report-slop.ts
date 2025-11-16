@@ -181,7 +181,7 @@ async function update_page_action_icon(details: browser.webNavigation._OnCommitt
     console.log(is_slop)
 }
 
-async function message_listener(message: any, sender: any, send_response: Function) {
+function message_listener(message: any, sender: any, send_response: Function): Promise<any> {
     switch (message.type) {
         
         case "check":
@@ -200,22 +200,28 @@ async function message_listener(message: any, sender: any, send_response: Functi
                 }))
             })
 
-            await Promise.all(check_promises)
+            const result = Promise.all(check_promises).then(() => {
+                let remote_slop = check_remote_slop(not_found_local)
+                remote_slop.then((remote_results) => {
+                    remote_results.forEach((result: any) => {
+                        browser.tabs.sendMessage(tabid, { type: "check_result", domain: result.domain_name, result: result })
+                    })
+                })
 
-            let remote_slop = await check_remote_slop(not_found_local)
-            remote_slop.forEach((result: any) => {
-                browser.tabs.sendMessage(tabid, { type: "check_result", domain: result.domain_name, result: result })
             })
+
+            return result
             break
         
         case "login":
             localStorage.setItem("accessToken", message.token)
-            send_response(true)
+            return new Promise((resolve, reject) => { resolve(true) })
             break
 
         case "islogged":
             const token = get_access_token()
-            send_response(token ? true : false)
+            const response = { logged_in: token != null ? true : false }
+            return new Promise((resolve, reject) => { resolve(response) })
             break
     }
 }

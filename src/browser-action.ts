@@ -14,11 +14,11 @@ class PopupState {
         this.logged_in = logged_in
         this.page_sections = page_sections
         this.visible_section = visible_section
-        this.setVisibleSection(logged_in ? "report" : "signup")
+        this.set_visible_section(logged_in ? "report" : "signup")
         this.page_elements = page_elements
     }
 
-    setVisibleSection(section_id: string) {
+    set_visible_section(section_id: string) {
         this.visible_section = section_id
         this.page_sections.forEach((element, id) => {
             element.style.visibility = id === section_id ? "visible" : "collapse"
@@ -46,6 +46,8 @@ async function submit_login_form() {
 
         const status_el = document.getElementById("login-status")
         status_el.setAttribute("style", "visibility: visible;")
+
+        popup_state.set_visible_section("report")
     }
     else {
         //bad login, update the form
@@ -70,7 +72,7 @@ async function submit_signup_form() {
 
 async function check_login(): Promise<boolean> {
     const response = await send_message_to_background({type: "islogged"})
-    response.json
+    return response.logged_in
 }
 
 
@@ -103,8 +105,8 @@ async function initialize_popup() {
     login_form.addEventListener("submit", (event) => { event.preventDefault(); submit_login_form() })
     signup_form.addEventListener("submit", (event) => { event.preventDefault(); submit_signup_form() })
 
-    signup_button.addEventListener("click", (event) => {popup_state.setVisibleSection("signup")})
-    login_button.addEventListener("click", (event) => {popup_state.setVisibleSection("login")})
+    signup_button.addEventListener("click", (event) => {popup_state.set_visible_section("signup")})
+    login_button.addEventListener("click", (event) => {popup_state.set_visible_section("login")})
 }
 
 addEventListener("DOMContentLoaded", (event) => {
