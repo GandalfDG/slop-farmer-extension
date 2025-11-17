@@ -66,7 +66,7 @@ async function submit_signup_form() {
 
     console.log(response)
     if (response.ok) {
-        
+        popup_state.page_elements.get("signup_status").textContent = "check your email for a verification link from slopfarmer@jack-case.pro. It may be in your spam folder."
     }
 }
 
@@ -86,6 +86,7 @@ async function initialize_popup() {
     const report_section = document.getElementById("report")
 
     const signup_button = document.getElementById("signup-select") as HTMLButtonElement
+    const signup_status = signup_section.querySelector("h2")
     const login_button = document.getElementById("login-select") as HTMLButtonElement
     const report_button = document.getElementById("report-button") as HTMLButtonElement
     const report_status = report_section.querySelector("h2")
@@ -99,6 +100,7 @@ async function initialize_popup() {
     page_elements.set("login_form", login_form as HTMLElement)
     page_elements.set("login_status", login_status)
     page_elements.set("signup_form", signup_form as HTMLElement)
+    page_elements.set("signup_status", signup_status)
     page_elements.set("report_button", report_button)
     page_elements.set("report_status", report_status)
     

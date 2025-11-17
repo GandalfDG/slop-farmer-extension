@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Slop Farmer",
-    "version": "0.4",
+    "version": "0.4.1",
 
     "author": "Jack Case",
     "description": "Crowd-source AI slop pages and domains",
@@ -16,7 +16,7 @@
     "content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; worker-src 'self' blob:",
 
     "browser_action": {
-        "default_icon": "icons/virus-slash.png",
+        "default_icon": "icons/virus_black_32.png",
         "default_title": "Slop Farmer",
         "default_popup": "pages/action_popup.html",
         "default_area": "navbar",
