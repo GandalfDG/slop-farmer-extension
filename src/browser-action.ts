@@ -87,6 +87,8 @@ async function initialize_popup() {
 
     const signup_button = document.getElementById("signup-select") as HTMLButtonElement
     const login_button = document.getElementById("login-select") as HTMLButtonElement
+    const report_button = document.getElementById("report-button") as HTMLButtonElement
+    const report_status = report_section.querySelector("h2")
 
     const page_sections = new Map()
     page_sections.set("signup", signup_section)
@@ -97,6 +99,9 @@ async function initialize_popup() {
     page_elements.set("login_form", login_form as HTMLElement)
     page_elements.set("login_status", login_status)
     page_elements.set("signup_form", signup_form as HTMLElement)
+    page_elements.set("report_button", report_button)
+    page_elements.set("report_status", report_status)
+    
 
     const logged_in = await check_login()
 
@@ -107,6 +112,11 @@ async function initialize_popup() {
 
     signup_button.addEventListener("click", (event) => {popup_state.set_visible_section("signup")})
     login_button.addEventListener("click", (event) => {popup_state.set_visible_section("login")})
+    report_button.addEventListener("click", async (event) => {
+        const result = await send_message_to_background({type: "report"})
+        popup_state.page_elements.get("report_status").textContent = "report accepted"
+        setTimeout(() => { window.close() }, 1000)
+    })
 }
 
 addEventListener("DOMContentLoaded", (event) => {

@@ -182,10 +182,11 @@ async function update_page_action_icon(details: browser.webNavigation._OnCommitt
 }
 
 function message_listener(message: any, sender: any, send_response: Function): Promise<any> {
+    const sender_tab = sender.tab ? sender.tab : undefined
+    const tabid = sender_tab ? sender_tab.id : undefined
     switch (message.type) {
-        
+
         case "check":
-            const tabid = sender.tab.id
             let check_promises = new Array()
             let not_found_local = new Array()
 
@@ -222,6 +223,15 @@ function message_listener(message: any, sender: any, send_response: Function): P
             const token = get_access_token()
             const response = { logged_in: token != null ? true : false }
             return new Promise((resolve, reject) => { resolve(response) })
+            break
+
+        case "report":
+            return new Promise((resolve, reject) => {
+                browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+                    const tab_url = new URL(tabs[0].url)
+                    insert_slop(tab_url.hostname, tab_url.pathname, true).then(() => resolve(true))
+                })
+            })
             break
     }
 }
