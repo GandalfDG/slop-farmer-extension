@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Slop Farmer",
-    "version": "0.4.1",
+    "version": "0.5.0",
 
     "author": "Jack Case",
     "description": "Crowd-source AI slop pages and domains",
@@ -44,5 +44,16 @@
             "matches": ["*://*.duckduckgo.com/*q=*"],
             "js": ["scripts/content-script.js"]
         }
-    ]
+    ],
+
+    "browser_specific_settings": {
+        "gecko": {
+            "data_collection_permissions": {
+                "required": [
+                    "authenticationInfo",
+                    "personallyIdentifyingInfo"
+                ]
+            }
+        }
+    }
 }
