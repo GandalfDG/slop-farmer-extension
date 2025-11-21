@@ -14,14 +14,23 @@ class PopupState {
         this.logged_in = logged_in
         this.page_sections = page_sections
         this.visible_section = visible_section
-        this.set_visible_section(logged_in ? "report" : "signup")
         this.page_elements = page_elements
     }
 
     set_visible_section(section_id: string) {
         this.visible_section = section_id
+        switch (section_id) {
+            case "signup":
+                this.page_elements.get("signup_button").setAttribute("class", "is-active")
+                this.page_elements.get("login_button").setAttribute("class", "")
+                break
+            case "login":
+                this.page_elements.get("login_button").setAttribute("class", "is-active")
+                this.page_elements.get("signup_button").setAttribute("class", "")
+                break
+        }
         this.page_sections.forEach((element, id) => {
-            element.style.visibility = id === section_id ? "visible" : "collapse"
+            element.style.display = id === section_id ? "block" : "none"
         })
     }
 }
@@ -85,9 +94,9 @@ async function initialize_popup() {
     const login_section = document.getElementById("login")
     const report_section = document.getElementById("report")
 
-    const signup_button = document.getElementById("signup-select") as HTMLButtonElement
+    const signup_button = document.getElementById("signup-tab")
     const signup_status = signup_section.querySelector("h2")
-    const login_button = document.getElementById("login-select") as HTMLButtonElement
+    const login_button = document.getElementById("login-tab")
     const report_button = document.getElementById("report-button") as HTMLButtonElement
     const report_status = report_section.querySelector("h2")
 
@@ -103,11 +112,14 @@ async function initialize_popup() {
     page_elements.set("signup_status", signup_status)
     page_elements.set("report_button", report_button)
     page_elements.set("report_status", report_status)
+    page_elements.set("signup_button", signup_button)
+    page_elements.set("login_button", login_button)
     
 
     const logged_in = await check_login()
 
     popup_state = new PopupState(logged_in, page_sections, "signup", page_elements)
+    popup_state.set_visible_section(logged_in ? "report" : "signup")
 
     login_form.addEventListener("submit", (event) => { event.preventDefault(); submit_login_form() })
     signup_form.addEventListener("submit", (event) => { event.preventDefault(); submit_signup_form() })
