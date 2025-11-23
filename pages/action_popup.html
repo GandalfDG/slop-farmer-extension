@@ -1,51 +1,86 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <!-- <script async defer src="https://cdn.jsdelivr.net/gh/altcha-org/altcha/dist/altcha.min.js" type="module"></script> -->
     <script async src="/scripts/browser-action.js" type="module"></script>
     <script async defer src="/scripts/altcha/dist/altcha.js" type="module"></script>
+    <link rel="stylesheet" href="/styles/bulma/bulma.min.css">
     <title>Slop Farmer</title>
 </head>
+
 <body>
-    <nav>
-        <button id="signup-select" type="button">sign up</button>
-        <button id="login-select" type="button">log in</button>
-    </nav>
-
-    <div id="onboarding" style="visibility: visible;">
-        <h1>Welcome, Slop Farmer!</h1>
-        <p>tired of ai-generated slop articles in your search results? Sign up or log in to start reporting slop articles
-            and have reported slop flagged in your searches!
-        </p>
+    <div id="onboarding" style="visibility: visible;" class="hero is-primary not-logged-in">
+        <div class="hero-body">
+            <h1 class="title">Welcome, Slop Farmer!</h1>
+            <p>tired of ai-generated slop articles in your search results? Sign up or log in to start reporting slop
+                articles and have reported slop flagged in your searches!</p>
+        </div>
     </div>
 
-    <div id="signup" style="visibility: collapse;">
-        <form id="signup-form">
-            <label for="email">email</label>
-            <input type="email" name="email" required />
-            <label for="password">password</label>
-            <input type="password" name="password" required />
-            <altcha-widget challengeurl="https://api.slopfarmer.jack-case.pro/altcha-challenge"></altcha-widget>
-            <button id="signup-button">sign up</button>
-        </form>
-        <h2></h2>
-    </div>
+    <button id="logout-button" class="button is-small logged-in">Logout</button>
 
-    <div id="login" style="visibility: collapse;">
-        <h1>Log in to enable slop checking and reporting</h1>
-        <form id="login-form">
-            <label for="email" id="username">username</label>
-            <input type="text" name="username" required />
-            <label for="password" id="password">password</label>
-            <input type="password" name="password" required />
-            <button id="login-button">login</button>
-        </form>
-        <h2 style="visibility: collapse;" id="login-status">You're logged in.</h2>  
-    </div>
+    <div class="section">
+        <nav class="tabs is-centered not-logged-in">
+            <ul>
+                <li id="signup-tab"><a>sign up</a></li>
+                <li id="login-tab"><a>log in</a></li>
+            </ul>
+        </nav>
 
-    <div id="report" style="visibility: collapse;">
-        <button id="report-button">Report this page</button>
-        <h2></h2>
+
+
+        <div id="signup" style="display:block" class="box">
+            <h1 class="title">Sign Up</h1>
+            <form id="signup-form">
+                <div class="field">
+                    <label for="email" class="label">E-Mail</label>
+                    <div class="control">
+                        <input type="email" name="email" required class="input" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="password" class="label">Password</label>
+                    <div class="control">
+                        <input type="password" name="password" required class="input" />
+                    </div>
+                </div>
+                <div class="field">
+                    <altcha-widget challengeurl="https://api.slopfarmer.jack-case.pro/altcha-challenge"></altcha-widget>
+                </div>
+                <div class="field">
+                    <button id="signup-button" class="button is-primary">sign up</button>
+                </div>
+            </form>
+            <h2></h2>
+        </div>
+
+        <div id="login" style="display:none" class="box">
+            <h1 class="title">Log In</h1>
+            <form id="login-form">
+                <div class="field">
+                    <label for="email" id="username" class="label">E-Mail</label>
+                    <div class="control">
+                        <input type="text" name="username" required class="input" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="password" id="password" class="label">Password</label>
+                    <div class="control">
+                        <input type="password" name="password" required class="input" />
+                    </div>
+                </div>
+                <div class="field">
+                    <button id="login-button" class="button is-primary">log in</button>
+                </div>
+            </form>
+            <h2 style="visibility: collapse;" id="login-status">You're logged in.</h2>
+        </div>
+
+        <div id="report" style="display: none" class="block">
+            <button id="report-button" class="button is-primary">Report this page</button>
+            <h2></h2>
+        </div>
     </div>
 </body>
