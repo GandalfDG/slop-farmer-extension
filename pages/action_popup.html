@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div id="onboarding" style="visibility: visible;" class="hero is-primary">
+    <div id="onboarding" style="visibility: visible;" class="hero is-primary not-logged-in">
         <div class="hero-body">
             <h1 class="title">Welcome, Slop Farmer!</h1>
             <p>tired of ai-generated slop articles in your search results? Sign up or log in to start reporting slop
@@ -19,13 +19,17 @@
         </div>
     </div>
 
+    <button id="logout-button" class="button is-small logged-in">Logout</button>
+
     <div class="section">
-        <nav class="tabs is-centered">
+        <nav class="tabs is-centered not-logged-in">
             <ul>
                 <li id="signup-tab"><a>sign up</a></li>
                 <li id="login-tab"><a>log in</a></li>
             </ul>
         </nav>
+
+
 
         <div id="signup" style="display:block" class="box">
             <h1 class="title">Sign Up</h1>

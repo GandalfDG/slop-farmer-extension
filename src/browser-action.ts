@@ -1,3 +1,4 @@
+import { getTextOfJSDocComment } from "../node_modules/typescript/lib/typescript.js"
 import { API_URL, send_message_to_background } from "./common.js"
 
 let popup_state: PopupState = null
@@ -10,11 +11,26 @@ class PopupState {
 
     page_elements: Map<string, HTMLElement>
 
-    constructor(logged_in: boolean, page_sections: Map<string, HTMLElement>, visible_section: string, page_elements: Map<string, HTMLElement>) {
+    visible_logged_in: Array<HTMLElement>
+    visible_logged_out: Array<HTMLElement>
+
+    constructor(logged_in: boolean, page_sections: Map<string, HTMLElement>, visible_section: string, page_elements: Map<string, HTMLElement>, visible_logged_in: Array<HTMLElement>, visible_logged_out: Array<HTMLElement>) {
         this.logged_in = logged_in
         this.page_sections = page_sections
         this.visible_section = visible_section
         this.page_elements = page_elements
+
+        this.visible_logged_in = visible_logged_in
+        this.visible_logged_out = visible_logged_out
+    }
+
+    update_login_visibility() {
+        this.visible_logged_in.forEach((element) => {
+            element.style.display = this.logged_in ? "block" : "none"
+        })
+        this.visible_logged_out.forEach((element) => {
+            element.style.display = this.logged_in ? "none" : "block"
+        })
     }
 
     set_visible_section(section_id: string) {
@@ -32,6 +48,8 @@ class PopupState {
         this.page_sections.forEach((element, id) => {
             element.style.display = id === section_id ? "block" : "none"
         })
+
+        this.update_login_visibility()
     }
 }
 
@@ -56,6 +74,8 @@ async function submit_login_form() {
         const status_el = document.getElementById("login-status")
         status_el.setAttribute("style", "visibility: visible;")
 
+        popup_state.logged_in = true
+
         popup_state.set_visible_section("report")
     }
     else {
@@ -79,6 +99,12 @@ async function submit_signup_form() {
     }
 }
 
+async function logout() {
+    const response = await send_message_to_background({type: "logout"})
+    popup_state.logged_in = false
+    popup_state.set_visible_section("login")
+}
+
 async function check_login(): Promise<boolean> {
     const response = await send_message_to_background({type: "islogged"})
     return response.logged_in
@@ -99,6 +125,7 @@ async function initialize_popup() {
     const login_button = document.getElementById("login-tab")
     const report_button = document.getElementById("report-button") as HTMLButtonElement
     const report_status = report_section.querySelector("h2")
+    const logout_button = document.getElementById("logout-button")
 
     const page_sections = new Map()
     page_sections.set("signup", signup_section)
@@ -114,11 +141,13 @@ async function initialize_popup() {
     page_elements.set("report_status", report_status)
     page_elements.set("signup_button", signup_button)
     page_elements.set("login_button", login_button)
-    
+
+    const logged_in_items = Array.from(document.querySelectorAll(".logged-in")) as Array<HTMLElement>
+    const logged_out_items = Array.from(document.querySelectorAll(".not-logged-in")) as Array<HTMLElement>
 
     const logged_in = await check_login()
 
-    popup_state = new PopupState(logged_in, page_sections, "signup", page_elements)
+    popup_state = new PopupState(logged_in, page_sections, "signup", page_elements, logged_in_items, logged_out_items)
     popup_state.set_visible_section(logged_in ? "report" : "signup")
 
     login_form.addEventListener("submit", (event) => { event.preventDefault(); submit_login_form() })
@@ -130,6 +159,9 @@ async function initialize_popup() {
         const result = await send_message_to_background({type: "report"})
         popup_state.page_elements.get("report_status").textContent = "report accepted"
         setTimeout(() => { window.close() }, 1000)
+    })
+    logout_button.addEventListener("click", async (event) => {
+        logout()
     })
 }
 

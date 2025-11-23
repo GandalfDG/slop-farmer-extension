@@ -225,6 +225,11 @@ function message_listener(message: any, sender: any, send_response: Function): P
             return new Promise((resolve, reject) => { resolve(response) })
             break
 
+        case "logout":
+            localStorage.removeItem("accessToken")
+            return new Promise((resolve, reject) => { resolve(true) })
+            break
+
         case "report":
             return new Promise((resolve, reject) => {
                 browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
