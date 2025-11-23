@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Slop Farmer",
-    "version": "0.5.0",
+    "version": "0.5.1",
 
     "author": "Jack Case",
     "description": "Crowd-source AI slop pages and domains",
@@ -13,7 +13,7 @@
         "*://*.duckduckgo.com/*"
     ],
 
-    "content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; worker-src 'self' blob:",
+    "content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; worker-src 'self'",
 
     "browser_action": {
         "default_icon": "icons/virus_black_32.png",
