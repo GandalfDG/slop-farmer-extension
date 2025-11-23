@@ -21,13 +21,13 @@
         "default_area": "navbar",
         "theme_icons": [
             {
-                "dark": "icons/virus_white_16.png",
-                "light": "icons/virus_black_16.png",
+                "dark": "icons/virus_black_16.png",
+                "light": "icons/virus_white_16.png",
                 "size": 16
             },
             {
-                "dark": "icons/virus_white_32.png",
-                "light": "icons/virus_black_32.png",
+                "dark": "icons/virus_black_32.png",
+                "light": "icons/virus_white_32.png",
                 "size": 32
             }
         ]
