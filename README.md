@@ -8,7 +8,7 @@ This is a work in progress.
 - Search on DuckDuckGo and your results will be checked against known slop domains and paths so anything known to be slop will appear as a red link
 
 ## TODOs
-- Implement signup with email verification
+- Implement signup with email verification ✅
 - Enable link checking without signup using a proof-of-work check to limit bot access to API
 - Enable voting on reported slop to get rid of false reports
 - Improve user experience
