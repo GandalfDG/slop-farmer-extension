@@ -10,7 +10,7 @@ function setup_storage_db() {
      *  ]
      * }
      */
-    let db
+    let db: IDBDatabase
     const db_request = window.indexedDB.open("SlopDB", 1)
 
     db_request.onerror = (event) => {
