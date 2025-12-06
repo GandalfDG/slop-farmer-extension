@@ -51,3 +51,16 @@ class SlopDB {
         return db_promise
     }
 }
+
+class CheckCache {
+    slopdb: SlopDB
+
+    constructor(slopdb: SlopDB) {
+        this.slopdb = slopdb
+    }
+
+    start_transaction(mode: IDBTransactionMode): IDBTransaction {
+        const transaction = this.slopdb.db.transaction("checkcache", mode)
+        return transaction
+    }
+}
