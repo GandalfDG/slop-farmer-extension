@@ -50,17 +50,44 @@ class SlopDB {
 
         return db_promise
     }
+
+    start_transaction(storeNames: string | Array<string>, mode: IDBTransactionMode, options: IDBTransactionOptions = undefined): IDBTransaction {
+        return this.db.transaction(storeNames, mode, options)
+    }
 }
 
 class CheckCache {
     slopdb: SlopDB
+    cache_capacity: number
+    static cache_objectstore_name = "checkcache"
 
-    constructor(slopdb: SlopDB) {
+    constructor(slopdb: SlopDB, max_entries: number) {
         this.slopdb = slopdb
+        this.cache_capacity = max_entries
     }
 
-    start_transaction(mode: IDBTransactionMode): IDBTransaction {
-        const transaction = this.slopdb.db.transaction("checkcache", mode)
-        return transaction
+    cache_item_factory(url: URL) {
+        return {
+            url: url,
+            check_timestamp: Date.now()
+        }
+    }
+
+    async evict_least_recently_checked(count: number) {
+        const transaction = this.slopdb.start_transaction(CheckCache.cache_objectstore_name, "readwrite")
+        const cache_objectstore = transaction.objectStore(CheckCache.cache_objectstore_name)
+
+        const cursor_result_promise = new Promise((resolve, reject) => {
+            const cache_cursor_request = cache_objectstore.openCursor()
+
+            cache_cursor_request.onerror = (error) => {
+                reject(error)
+            }
+
+            cache_cursor_request.onsuccess = (event) => {
+                
+            }
+        })
+        
     }
 }
