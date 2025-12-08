@@ -1,3 +1,38 @@
+class IDBCursorValueIterator {
+    cursor: IDBCursorWithValue
+
+    constructor(cursor: IDBCursorWithValue) {
+        this.cursor = cursor
+    }
+
+    next(): IteratorResult<any> {
+        const key = this.cursor.key
+        const value = this.cursor.value
+        let done = false
+
+        try {
+            this.cursor.continue()
+        }
+        catch (error) {
+            if (error.name === "InvalidStateError") {
+                done = true
+            }
+            else {
+                throw error
+            }
+        }
+        finally {
+            return { value: {key: key, value: value}, done: done }
+        }
+    }
+
+    [Symbol.iterator]() {
+        return this
+    }
+
+}
+
+
 class SlopDB {
     db: IDBDatabase
 
@@ -77,7 +112,7 @@ class CheckCache {
         const transaction = this.slopdb.start_transaction(CheckCache.cache_objectstore_name, "readwrite")
         const cache_objectstore = transaction.objectStore(CheckCache.cache_objectstore_name)
 
-        const cursor_result_promise = new Promise((resolve, reject) => {
+        const cursor_result_promise = new Promise<Iterable<any>>((resolve, reject) => {
             const cache_cursor_request = cache_objectstore.openCursor()
 
             cache_cursor_request.onerror = (error) => {
@@ -85,9 +120,21 @@ class CheckCache {
             }
 
             cache_cursor_request.onsuccess = (event) => {
-                
+                const cursor = cache_cursor_request.result
+                resolve(new IDBCursorValueIterator(cursor))
             }
         })
+
+        const cursor = await cursor_result_promise
+
+        const key_array = Array.from(cursor)
+        key_array.sort((a, b) => {
+            const a_datetime = a.check_timestamp
+            const b_datetime = b.check_timestamp
+
+            return a_datetime.getTime - b_datetime.getTime
+        })
+
         
     }
 }
