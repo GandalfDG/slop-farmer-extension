@@ -1,5 +1,5 @@
 export default {
-  srcDir: "src",
+  srcDir: "scripts",
   // srcFiles should usually be left empty when using ES modules, because you'll
   // explicitly import sources from your specs.
   srcFiles: [],
