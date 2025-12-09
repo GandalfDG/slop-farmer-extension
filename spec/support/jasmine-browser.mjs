@@ -3,9 +3,9 @@ export default {
   // srcFiles should usually be left empty when using ES modules, because you'll
   // explicitly import sources from your specs.
   srcFiles: [],
-  specDir: ".",
+  specDir: "./spec",
   specFiles: [
-    "spec/**/*[sS]pec.?(m)js"
+    "**/*[sS]pec.?(m)js"
   ],
   helpers: [
     "spec/helpers/**/*.?(m)js"
@@ -33,6 +33,7 @@ export default {
   hostname: "localhost",
 
   browser: {
-    name: "firefox"
+    name: "firefox",
+    headless: true
   }
 };

@@ -2,5 +2,6 @@
 	"image": "mcr.microsoft.com/devcontainers/universal:2",
 	"features": {
 		"ghcr.io/devcontainers-community/npm-features/typescript:1": {}
-	}
+	},
+	"postCreateCommand": "apt-get update && apt-get install -y firefox xvfb libxss1 libappindicator1 libindicator7"
 }

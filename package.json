@@ -12,6 +12,6 @@
   "scripts": {
     "build": "dev-scripts/build-extension.sh",
     "pretest": "tsc",
-    "test": "jasmine-browser-runner runSpecs"
+    "test": "xvfb-run -a jasmine-browser-runner runSpecs"
   }
 }
