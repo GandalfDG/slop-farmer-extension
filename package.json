@@ -1,7 +1,13 @@
 {
   "dependencies": {
+    "altcha": "^2.2.4"
+  },
+  "devDependencies": {
     "@types/firefox-webext-browser": "^143.0.0",
-    "altcha": "^2.2.4",
+    "jasmine": "^5.13.0",
     "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "dev-scripts/build-extension.sh"
   }
 }
