@@ -1,4 +1,4 @@
-class IDBCursorValueIterator {
+export class IDBCursorValueIterator {
     cursor: IDBCursorWithValue
 
     constructor(cursor: IDBCursorWithValue) {
@@ -33,7 +33,7 @@ class IDBCursorValueIterator {
 }
 
 
-class SlopDB {
+export class SlopDB {
     db: IDBDatabase
 
     constructor(idb_version: number) {
@@ -91,7 +91,7 @@ class SlopDB {
     }
 }
 
-class CheckCache {
+export class CheckCache {
     slopdb: SlopDB
     cache_capacity: number
     static cache_objectstore_name = "checkcache"
