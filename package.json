@@ -5,9 +5,12 @@
   "devDependencies": {
     "@types/firefox-webext-browser": "^143.0.0",
     "jasmine": "^5.13.0",
+    "jasmine-browser-runner": "^3.0.0",
+    "jasmine-core": "^5.13.0",
     "typescript": "^5.9.3"
   },
   "scripts": {
-    "build": "dev-scripts/build-extension.sh"
+    "build": "dev-scripts/build-extension.sh",
+    "test": "jasmine-browser-runner runSpecs"
   }
 }
