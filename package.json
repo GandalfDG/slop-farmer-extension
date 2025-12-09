@@ -1,7 +1,12 @@
 {
   "dependencies": {
-    "@types/firefox-webext-browser": "^143.0.0",
-    "altcha": "^2.2.4",
-    "typescript": "^5.9.3"
+    "altcha": "^2.2.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/firefox-webext-browser": "^143.0.0"
+  },
+  "scripts": {
+    "build": "dev-scripts/build-extension.sh"
   }
 }
