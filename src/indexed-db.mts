@@ -60,15 +60,19 @@ export class SlopDB {
         const db_promise = new Promise<IDBDatabase>((resolve, reject) => {
             const db_request = window.indexedDB.open("SlopDB", idb_version)
 
+            // success and upgradeneeded will both fire, so this doesn't work right
+            
             db_request.onerror = (_event) => {
                 reject(db_request.error)
             }
 
             db_request.onsuccess = (_event) => {
+                console.log("success")
                 resolve(db_request.result)
             }
 
             db_request.onupgradeneeded = (upgrade_event) => {
+                console.log("upgradeneeded")
                 const oldVersion = upgrade_event.oldVersion
                 const newVersion = upgrade_event.newVersion
 
