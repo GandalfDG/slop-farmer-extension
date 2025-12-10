@@ -1,4 +1,5 @@
 import { SlopDB } from "../scripts/indexed-db.js"
+import { deleteDB } from "../scripts/idb/index.js"
 
 describe("sanity check", () => {
     it("works", () => {
@@ -9,14 +10,7 @@ describe("sanity check", () => {
 describe("SlopDB Version 1", () => {
 
     beforeEach(async () => {
-        const request = window.indexedDB.deleteDatabase("SlopDB")
-        const deletePromise = new Promise((resolve, reject) => {
-            request.onsuccess = () => {resolve()}
-            request.onerror = (err) => {
-                reject(err)
-            }
-        })
-        return deletePromise       
+        await deleteDB("SlopDB")
     })
 
     it("creates a version 1 indexeddb", async () => {
