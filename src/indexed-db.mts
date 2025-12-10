@@ -44,7 +44,9 @@ export class SlopDB {
         this.version = idb_version
         this.open_promise = openDB("SlopDB", idb_version, {
             upgrade(db, oldVersion, newVersion, transaction, event) {
-                //TODO
+                for (let version = oldVersion + 1; version <= newVersion; version++) {
+                    this.apply_db_upgrade(db, version)
+                }
             }
         })
     }
@@ -64,90 +66,90 @@ export class SlopDB {
         }
     }
 
-    async open_database(idb_version: number): Promise<IDBDatabase> {
-        const db_promise = new Promise<IDBDatabase>((resolve, reject) => {
-            const db_request = window.indexedDB.open("SlopDB", idb_version)
+    // async open_database(idb_version: number): Promise<IDBDatabase> {
+    //     const db_promise = new Promise<IDBDatabase>((resolve, reject) => {
+    //         const db_request = window.indexedDB.open("SlopDB", idb_version)
 
-            // success and upgradeneeded will both fire, so this doesn't work right
+    //         // success and upgradeneeded will both fire, so this doesn't work right
             
-            db_request.onerror = (_event) => {
-                reject(db_request.error)
-            }
+    //         db_request.onerror = (_event) => {
+    //             reject(db_request.error)
+    //         }
 
-            db_request.onsuccess = (_event) => {
-                console.log("success")
-                resolve(db_request.result)
-            }
+    //         db_request.onsuccess = (_event) => {
+    //             console.log("success")
+    //             resolve(db_request.result)
+    //         }
 
-            db_request.onupgradeneeded = (upgrade_event) => {
-                console.log("upgradeneeded")
-                const oldVersion = upgrade_event.oldVersion
-                const newVersion = upgrade_event.newVersion
+    //         db_request.onupgradeneeded = (upgrade_event) => {
+    //             console.log("upgradeneeded")
+    //             const oldVersion = upgrade_event.oldVersion
+    //             const newVersion = upgrade_event.newVersion
 
-                const db = db_request.result
+    //             const db = db_request.result
 
-                // make updates
-                for (let version = oldVersion + 1; version <= newVersion; version++) {
-                    this.apply_db_upgrade(db, version)
-                }
+    //             // make updates
+    //             for (let version = oldVersion + 1; version <= newVersion; version++) {
+    //                 this.apply_db_upgrade(db, version)
+    //             }
 
-                resolve(db)
-            }
-        })
+    //             resolve(db)
+    //         }
+    //     })
 
-        return db_promise
-    }
+    //     return db_promise
+    // }
 
-    start_transaction(storeNames: string | Array<string>, mode: IDBTransactionMode, options: IDBTransactionOptions = undefined): IDBTransaction {
-        return this.db.transaction(storeNames, mode, options)
-    }
+    // start_transaction(storeNames: string | Array<string>, mode: IDBTransactionMode, options: IDBTransactionOptions = undefined): IDBTransaction {
+    //     return this.db.transaction(storeNames, mode, options)
+    // }
 
 }
 
-export class CheckCache {
-    slopdb: SlopDB
-    cache_capacity: number
-    static cache_objectstore_name = "checkcache"
+// export class CheckCache {
+//     slopdb: SlopDB
+//     cache_capacity: number
+//     static cache_objectstore_name = "checkcache"
 
-    constructor(slopdb: SlopDB, max_entries: number) {
-        this.slopdb = slopdb
-        this.cache_capacity = max_entries
-    }
+//     constructor(slopdb: SlopDB, max_entries: number) {
+//         this.slopdb = slopdb
+//         this.cache_capacity = max_entries
+//     }
 
-    cache_item_factory(url: URL) {
-        return {
-            url: url,
-            check_timestamp: Date.now()
-        }
-    }
+//     cache_item_factory(url: URL) {
+//         return {
+//             url: url,
+//             check_timestamp: Date.now()
+//         }
+//     }
 
-    async evict_least_recently_checked(count: number) {
-        const transaction = this.slopdb.start_transaction(CheckCache.cache_objectstore_name, "readwrite")
-        const cache_objectstore = transaction.objectStore(CheckCache.cache_objectstore_name)
+//     async evict_least_recently_checked(count: number) {
+//         const transaction = this.slopdb.start_transaction(CheckCache.cache_objectstore_name, "readwrite")
+//         const cache_objectstore = transaction.objectStore(CheckCache.cache_objectstore_name)
 
-        const cursor_result_promise = new Promise<Iterable<any>>((resolve, reject) => {
-            const cache_cursor_request = cache_objectstore.openCursor()
+//         const cursor_result_promise = new Promise<Iterable<any>>((resolve, reject) => {
+//             const cache_cursor_request = cache_objectstore.openCursor()
 
-            cache_cursor_request.onerror = (error) => {
-                reject(error)
-            }
+//             cache_cursor_request.onerror = (error) => {
+//                 reject(error)
+//             }
 
-            cache_cursor_request.onsuccess = (event) => {
-                const cursor = cache_cursor_request.result
-                resolve(new IDBCursorValueIterator(cursor))
-            }
-        })
+//             cache_cursor_request.onsuccess = (event) => {
+//                 const cursor = cache_cursor_request.result
+//                 resolve(new IDBCursorValueIterator(cursor))
+//             }
+//         })
 
-        const cursor = await cursor_result_promise
+//         const cursor = await cursor_result_promise
 
-        const key_array = Array.from(cursor)
-        key_array.sort((a, b) => {
-            const a_datetime = a.check_timestamp
-            const b_datetime = b.check_timestamp
+//         const key_array = Array.from(cursor)
+//         key_array.sort((a, b) => {
+//             const a_datetime = a.check_timestamp
+//             const b_datetime = b.check_timestamp
 
-            return a_datetime.getTime - b_datetime.getTime
-        })
+//             return a_datetime.getTime - b_datetime.getTime
+//         })
 
         
-    }
-}
+//     }
+// }
