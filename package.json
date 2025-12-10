@@ -13,7 +13,8 @@
   "scripts": {
     "build": "dev-scripts/build-extension.sh",
     "pretest": "tsc",
-    "test": "xvfb-run -a jasmine-browser-runner runSpecs"
+    "test": "xvfb-run -a jasmine-browser-runner runSpecs",
+    "testserve": "tsc --watch & jasmine-browser-runner serve"
   },
   "type": "module"
 }
