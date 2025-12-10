@@ -27,11 +27,10 @@ export default {
   // For security, listen only to localhost. You can also specify a different
   // hostname or IP address, or remove the property or set it to "*" to listen
   // to all network interfaces.
-  listenAddress: "localhost",
+  listenAddress: "*",
 
   // The hostname that the browser will use to connect to the server.
   hostname: "localhost",
-
   browser: {
     name: "firefox",
     headless: true
