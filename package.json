@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@coderundebug/indexeddb-promise": "git+https://github.com/StephenHassall/indexeddb-promise.git",
-    "altcha": "^2.2.4"
+    "altcha": "^2.2.4",
+    "idb": "^8.0.3"
   },
   "devDependencies": {
     "@types/firefox-webext-browser": "^143.0.0",

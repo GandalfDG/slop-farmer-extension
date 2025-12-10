@@ -1,7 +1,4 @@
-// import { } from "./common.js"
-import { Database } from "indexeddb-promise/indexeddb.js"
-
-const db = new Database("asdf", 1)
+import { openDB, IDBPDatabase } from "/idb/index.js"
 
 export class IDBCursorValueIterator {
     cursor: IDBCursorWithValue
@@ -39,11 +36,17 @@ export class IDBCursorValueIterator {
 
 
 export class SlopDB {
-    open_promise: Promise<IDBDatabase>
-    db: IDBDatabase
+    version: number
+    open_promise: Promise<IDBPDatabase>
+    db: IDBPDatabase
 
     constructor(idb_version: number) {
-        this.open_promise = this.open_database(idb_version)
+        this.version = idb_version
+        this.open_promise = openDB("SlopDB", idb_version, {
+            upgrade(db, oldVersion, newVersion, transaction, event) {
+                //TODO
+            }
+        })
     }
 
     async db_opened() {

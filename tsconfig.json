@@ -8,7 +8,7 @@
     "compilerOptions": {
         "allowJs": true,
         "outDir": "scripts",
-        "lib": ["ES7", "DOM"],
+        "lib": ["ESNext", "DOM"],
         
         // "noImplicitAny": true,
         "noFallthroughCasesInSwitch": true,
@@ -18,7 +18,7 @@
         "target": "esnext",
         "baseUrl": ".",
         "paths": {
-            "indexeddb-promise/*": ["node_modules/@coderundebug/indexeddb-promise/*"]
+            "/idb/*": ["node_modules/idb/build/*"]
         },
         "module": "nodenext",
 

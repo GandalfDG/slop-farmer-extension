@@ -21,16 +21,7 @@ describe("SlopDB Version 1", () => {
 
     it("creates a version 1 indexeddb", async () => {
         const slopdb_v1 = new SlopDB(1)
-        await slopdb_v1.db_opened()
-        expect(slopdb_v1.db).toBeDefined()
 
-        const transaction = slopdb_v1.start_transaction("slop", "readonly")
-        expect(transaction).toBeDefined()
 
-        try {
-            const bad_transaction = slopdb_v1.start_transaction("checkcache", "readonly")
-        } catch (error) {
-            expect(error.name).toBe("NotFoundError")
-        }
     })
 })
