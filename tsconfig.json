@@ -1,13 +1,26 @@
 {
-    "include": ["src/**/*"],
+    "include": [
+        "src/**/*",
+        "node_modules/altcha/*",
+        "node_modules/@coderundebug/indexeddb-promise/*"    
+    ],
+    
     "compilerOptions": {
+        "allowJs": true,
         "outDir": "scripts",
-        "noImplicitAny": true,
         "lib": ["ES7", "DOM"],
+        
+        "noImplicitAny": true,
+        "noFallthroughCasesInSwitch": true,
+        
         "sourceMap": true,
+        
         "target": "esnext",
-        "baseUrl": "src/",
-        "module": "esnext",
-        "noFallthroughCasesInSwitch": true
+        "baseUrl": ".",
+        "paths": {
+            "indexeddb-promise/*": ["node_modules/@coderundebug/indexeddb-promise/*"]
+        },
+        "module": "nodenext",
+
     }
 }

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@coderundebug/indexeddb-promise": "git+https://github.com/StephenHassall/indexeddb-promise.git",
     "altcha": "^2.2.4"
   },
   "devDependencies": {
@@ -13,5 +14,6 @@
     "build": "dev-scripts/build-extension.sh",
     "pretest": "tsc",
     "test": "xvfb-run -a jasmine-browser-runner runSpecs"
-  }
+  },
+  "type": "module"
 }

@@ -1,3 +1,8 @@
+// import { } from "./common.js"
+import { Database } from "indexeddb-promise/indexeddb.js"
+
+const db = new Database("asdf", 1)
+
 export class IDBCursorValueIterator {
     cursor: IDBCursorWithValue
 
