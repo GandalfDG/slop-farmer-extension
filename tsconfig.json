@@ -18,7 +18,7 @@
         "target": "esnext",
         "baseUrl": ".",
         "paths": {
-            "/idb/*": ["node_modules/idb/build/*"]
+            "idb/*": ["node_modules/idb/build/*"]
         },
         "module": "nodenext",
 

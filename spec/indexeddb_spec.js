@@ -1,4 +1,4 @@
-import { SlopDB } from "../scripts/indexed-db.mjs"
+import { SlopDB } from "../scripts/indexed-db.js"
 
 describe("sanity check", () => {
     it("works", () => {

@@ -10,7 +10,7 @@ export default {
   helpers: [
     "spec/helpers/**/*.?(m)js"
   ],
-  esmFilenameExtension: ".mjs",
+  esmFilenameExtension: ".js",
   // Set to true if you need to load module src files instead of loading via the spec files.
   modulesWithSideEffectsInSrcFiles: false,
   // Allows the use of top-level await in src/spec/helper files. This is off by
@@ -34,5 +34,11 @@ export default {
   browser: {
     name: "firefox",
     headless: true
+  },
+  "importMap": {
+    "moduleRootDir": "scripts",
+    "imports": {
+      "idb/": "scripts/idb/"
+    }
   }
 };

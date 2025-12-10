@@ -1,4 +1,4 @@
-import { openDB, IDBPDatabase } from "/idb/index.js"
+import { openDB, IDBPDatabase } from "idb/index.js"
 
 export class IDBCursorValueIterator {
     cursor: IDBCursorWithValue
