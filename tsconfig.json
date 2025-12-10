@@ -2,7 +2,7 @@
     "include": [
         "src/**/*",
         "node_modules/altcha/*",
-        "node_modules/@coderundebug/indexeddb-promise/*"    
+        // "node_modules/@coderundebug/indexeddb-promise/*"    
     ],
     
     "compilerOptions": {
@@ -10,7 +10,7 @@
         "outDir": "scripts",
         "lib": ["ES7", "DOM"],
         
-        "noImplicitAny": true,
+        // "noImplicitAny": true,
         "noFallthroughCasesInSwitch": true,
         
         "sourceMap": true,
