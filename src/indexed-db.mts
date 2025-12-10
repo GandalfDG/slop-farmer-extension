@@ -34,15 +34,15 @@ export class IDBCursorValueIterator {
 
 
 export class SlopDB {
+    open_promise: Promise<IDBDatabase>
     db: IDBDatabase
 
     constructor(idb_version: number) {
-        this.open_database(idb_version).then((db) => {
-            this.db = db
-        }).catch((err) => {
-            console.log(err)
-            throw err
-        })
+        this.open_promise = this.open_database(idb_version)
+    }
+
+    async db_opened() {
+        this.db = await this.open_promise
     }
 
     apply_db_upgrade(db: IDBDatabase, idb_version: number) {
@@ -89,6 +89,7 @@ export class SlopDB {
     start_transaction(storeNames: string | Array<string>, mode: IDBTransactionMode, options: IDBTransactionOptions = undefined): IDBTransaction {
         return this.db.transaction(storeNames, mode, options)
     }
+
 }
 
 export class CheckCache {
