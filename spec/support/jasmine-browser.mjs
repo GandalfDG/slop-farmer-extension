@@ -1,11 +1,11 @@
 export default {
-  srcDir: "scripts",
+  srcDir: ".",
   // srcFiles should usually be left empty when using ES modules, because you'll
   // explicitly import sources from your specs.
   srcFiles: [],
-  specDir: "./spec",
+  specDir: ".",
   specFiles: [
-    "**/*[sS]pec.?(m)js"
+    "spec/**/*[sS]pec.?(m)js"
   ],
   helpers: [
     "spec/helpers/**/*.?(m)js"

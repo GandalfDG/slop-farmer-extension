@@ -1,21 +1,7 @@
+import { SlopDB } from "../scripts/indexed-db.mjs"
 
-
-describe("IndexedDB Abstractions", function () {
-
-    beforeAll(async function () {
-        try {
-            const mod = await import("../scripts/indexed-db.js")
-            SlopDB = mod.SlopDB
-        } catch (err) {
-            it("works?", function () {
-                fail(err)
-            })
-        }
+describe("sanity check", () => {
+    it("works", () => {
+        expect(true).toBeTrue()
     })
-
-    it("lol", function() {
-        expect(false).toBeTrue()
-    })
-
-
 })
