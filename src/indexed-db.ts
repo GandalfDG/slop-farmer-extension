@@ -40,22 +40,7 @@ export class SlopDB {
     open_promise: Promise<IDBPDatabase>
     db: IDBPDatabase
 
-    constructor(idb_version: number) {
-        this.version = idb_version
-        this.open_promise = openDB("SlopDB", idb_version, {
-            upgrade(db, oldVersion, newVersion, transaction, event) {
-                for (let version = oldVersion + 1; version <= newVersion; version++) {
-                    this.apply_db_upgrade(db, version)
-                }
-            }
-        })
-    }
-
-    async db_opened() {
-        this.db = await this.open_promise
-    }
-
-    apply_db_upgrade(db: IDBDatabase, idb_version: number) {
+    static apply_db_upgrade(db: IDBPDatabase, idb_version: number) {
         switch (idb_version) {
             case 1: 
                 db.createObjectStore("slop", { keyPath: "domain" })
@@ -66,43 +51,27 @@ export class SlopDB {
         }
     }
 
-    // async open_database(idb_version: number): Promise<IDBDatabase> {
-    //     const db_promise = new Promise<IDBDatabase>((resolve, reject) => {
-    //         const db_request = window.indexedDB.open("SlopDB", idb_version)
+    constructor(idb_version: number) {
+        this.version = idb_version
+        this.open_promise = openDB("SlopDB", idb_version, {
+            upgrade(db, oldVersion, newVersion, transaction, event) {
+                for (let version = oldVersion + 1; version <= newVersion; version++) {
+                    SlopDB.apply_db_upgrade(db, version)
+                }
+            },
+            blocked(curVer, bloVer, event) {
+                console.error("IDB Open blocked on " + curVer + " blocking ver " + bloVer)
+            },
+            blocking(curVer, bloVer, event) {
+                console.error("IDB Open blocking " + curVer + " blocked ver " + bloVer)
+            }
+        })
+    }
 
-    //         // success and upgradeneeded will both fire, so this doesn't work right
-            
-    //         db_request.onerror = (_event) => {
-    //             reject(db_request.error)
-    //         }
+    async db_opened() {
+        this.db = await this.open_promise
+    }
 
-    //         db_request.onsuccess = (_event) => {
-    //             console.log("success")
-    //             resolve(db_request.result)
-    //         }
-
-    //         db_request.onupgradeneeded = (upgrade_event) => {
-    //             console.log("upgradeneeded")
-    //             const oldVersion = upgrade_event.oldVersion
-    //             const newVersion = upgrade_event.newVersion
-
-    //             const db = db_request.result
-
-    //             // make updates
-    //             for (let version = oldVersion + 1; version <= newVersion; version++) {
-    //                 this.apply_db_upgrade(db, version)
-    //             }
-
-    //             resolve(db)
-    //         }
-    //     })
-
-    //     return db_promise
-    // }
-
-    // start_transaction(storeNames: string | Array<string>, mode: IDBTransactionMode, options: IDBTransactionOptions = undefined): IDBTransaction {
-    //     return this.db.transaction(storeNames, mode, options)
-    // }
 
 }
 
