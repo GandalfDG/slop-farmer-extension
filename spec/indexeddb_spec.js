@@ -19,27 +19,33 @@ describe("SlopDB", () => {
         db.close()
     })
 
-    it("creates a version 1 indexeddb", async () => {
-        const slopdb_v1 = new SlopDB(1)
-        await slopdb_v1.db_opened()
-        db = slopdb_v1.db
+    describe("version 1", () => {
+        it("creates a version 1 indexeddb", async () => {
+            const slopdb_v1 = new SlopDB(1)
+            await slopdb_v1.db_opened()
+            db = slopdb_v1.db
 
-        const object_stores = slopdb_v1.db.objectStoreNames
-        expect(object_stores).toContain("slop")
-        expect(object_stores).not.toContain("checkcache")
+            const object_stores = slopdb_v1.db.objectStoreNames
+            expect(object_stores).toContain("slop")
+            expect(object_stores).not.toContain("checkcache")
 
-        // slopdb_v1.db.close()
+            // slopdb_v1.db.close()
+        })
     })
 
-    it("creates a version 2 indexeddb", async () => {
-        const slopdb_v2 = new SlopDB(2)
-        await slopdb_v2.db_opened()
-        db = slopdb_v2.db
+    describe("version 2", () => {
+        it("creates a version 2 indexeddb", async () => {
+            const slopdb_v2 = new SlopDB(2)
+            await slopdb_v2.db_opened()
+            db = slopdb_v2.db
 
-        const object_stores = slopdb_v2.db.objectStoreNames
-        expect(object_stores).toContain("slop")
-        expect(object_stores).toContain("checkcache")
+            const object_stores = slopdb_v2.db.objectStoreNames
+            expect(object_stores).toContain("slop")
+            expect(object_stores).toContain("checkcache")
 
-        // slopdb_v2.db.close()
+            // slopdb_v2.db.close()
+        })
     })
+
+
 })
