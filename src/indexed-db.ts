@@ -44,7 +44,7 @@ export class CheckCache {
         this.cache_capacity = max_entries
     }
 
-    cache_item_factory(url: URL) {
+    cache_item_factory(url: string) {
         return {
             url: url,
             check_timestamp: Date.now()
@@ -53,11 +53,12 @@ export class CheckCache {
 
     async store(url: string) {
         const cache_store = this.slopdb.db.transaction(CheckCache.cache_objectstore_name, "readwrite").objectStore(CheckCache.cache_objectstore_name)
-        await cache_store.add(this.cache_item_factory(new URL(url)))
+        await cache_store.add(this.cache_item_factory(url))
     }
 
-    get(url: URL) {
-        return url
+    async get(url: string) {
+        const cache_store = this.slopdb.db.transaction(CheckCache.cache_objectstore_name, "readwrite").objectStore(CheckCache.cache_objectstore_name)
+        return cache_store.get(url)
     }
 
     // async evict_least_recently_checked(count: number) {
@@ -102,7 +103,7 @@ export class SlopDB {
                 db.createObjectStore("slop", { keyPath: "domain" })
                 break
             case 2:
-                db.createObjectStore("checkcache", { keyPath: "domain" })
+                db.createObjectStore("checkcache", { keyPath: "url" })
                 break
         }
     }

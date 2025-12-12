@@ -1,6 +1,8 @@
 import { SlopDB, CheckCache } from "../scripts/indexed-db.js"
 import { openDB, deleteDB } from "../scripts/idb/index.js"
 
+const MAX_TIMESTAMP_DIFFERENCE = 3
+
 describe("sanity check", () => {
     it("works", () => {
         expect(true).toBeTrue()
@@ -58,13 +60,16 @@ describe("SlopDB", () => {
 
             const slop_url = new URL("https://sloppy-slop.com/sloparticle")
 
-            await cache.store(slop_url.host)
+            await cache.store(slop_url.toString())
             const store_time = Date.now()
-            const cached_item = cache.get(slop_url.host)
+            const cached_item = await cache.get(slop_url.toString())
 
-            expect(cached_item.url).toEqual(slop_url)
-            expect(cached_item.check_timestamp).toBeCloseTo(store_time)
+            expect(cached_item.url).toEqual(slop_url.toString())
+            expect(cached_item.check_timestamp).toBeLessThanOrEqual(store_time)
+            expect(cached_item.check_timestamp).toBeGreaterThan(store_time - MAX_TIMESTAMP_DIFFERENCE)
         })
+
+        it("updates a cached url's timestamp when it is accessed")
     })
 
 
