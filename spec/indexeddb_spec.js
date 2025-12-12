@@ -69,7 +69,19 @@ describe("SlopDB", () => {
             expect(cached_item.check_timestamp).toBeGreaterThan(store_time - MAX_TIMESTAMP_DIFFERENCE)
         })
 
-        it("updates a cached url's timestamp when it is accessed")
+        it("updates a cached url's timestamp when it is accessed", async () => {
+            const mock_clock = clock.install()
+            const cache = slopdb.get_check_cache()
+
+            const slop_url = new URL("https://sloppy-slop.com/sloparticle")
+            await cache.store(slop_url.toString())
+            const store_time = Date.now()
+
+            mock_clock.tick(1000 * 30)
+
+            const cached_item = cache.get(slop_url.toString())
+            expect(cached_item.check_timestamp).toEqual(store_time + 30)
+        })
     })
 
 
