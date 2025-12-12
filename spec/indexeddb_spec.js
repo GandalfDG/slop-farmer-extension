@@ -1,4 +1,4 @@
-import { SlopDB } from "../scripts/indexed-db.js"
+import { SlopDB, CheckCache } from "../scripts/indexed-db.js"
 import { openDB, deleteDB } from "../scripts/idb/index.js"
 
 describe("sanity check", () => {
@@ -34,16 +34,36 @@ describe("SlopDB", () => {
     })
 
     describe("version 2", () => {
-        it("creates a version 2 indexeddb", async () => {
-            const slopdb_v2 = new SlopDB(2)
-            await slopdb_v2.db_opened()
-            db = slopdb_v2.db
 
-            const object_stores = slopdb_v2.db.objectStoreNames
+        let slopdb
+
+        beforeEach(async () => {
+            slopdb = new SlopDB(2)
+            await slopdb.db_opened()
+            db = slopdb.db
+        })
+
+        it("creates a version 2 indexeddb", async () => {
+
+            const object_stores = slopdb.db.objectStoreNames
             expect(object_stores).toContain("slop")
             expect(object_stores).toContain("checkcache")
 
             // slopdb_v2.db.close()
+        })
+
+        it("caches a checked url", async () => {
+            const cache = slopdb.get_check_cache()
+            expect(cache).toBeInstanceOf(CheckCache)
+
+            const slop_url = new URL("https://sloppy-slop.com/sloparticle")
+
+            await cache.store(slop_url.host)
+            const store_time = Date.now()
+            const cached_item = cache.get(slop_url.host)
+
+            expect(cached_item.url).toEqual(slop_url)
+            expect(cached_item.check_timestamp).toBeCloseTo(store_time)
         })
     })
 

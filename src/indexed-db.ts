@@ -34,6 +34,62 @@ export class IDBCursorValueIterator {
 
 }
 
+export class CheckCache {
+    slopdb: SlopDB
+    cache_capacity: number
+    static cache_objectstore_name = "checkcache"
+
+    constructor(slopdb: SlopDB, max_entries: number) {
+        this.slopdb = slopdb
+        this.cache_capacity = max_entries
+    }
+
+    cache_item_factory(url: URL) {
+        return {
+            url: url,
+            check_timestamp: Date.now()
+        }
+    }
+
+    async store(url: string) {
+        const cache_store = this.slopdb.db.transaction(CheckCache.cache_objectstore_name, "readwrite").objectStore(CheckCache.cache_objectstore_name)
+        await cache_store.add(this.cache_item_factory(new URL(url)))
+    }
+
+    get(url: URL) {
+        return url
+    }
+
+    // async evict_least_recently_checked(count: number) {
+    //     const transaction = this.slopdb.start_transaction(CheckCache.cache_objectstore_name, "readwrite")
+    //     const cache_objectstore = transaction.objectStore(CheckCache.cache_objectstore_name)
+
+    //     const cursor_result_promise = new Promise<Iterable<any>>((resolve, reject) => {
+    //         const cache_cursor_request = cache_objectstore.openCursor()
+
+    //         cache_cursor_request.onerror = (error) => {
+    //             reject(error)
+    //         }
+
+    //         cache_cursor_request.onsuccess = (event) => {
+    //             const cursor = cache_cursor_request.result
+    //             resolve(new IDBCursorValueIterator(cursor))
+    //         }
+    //     })
+
+    //     const cursor = await cursor_result_promise
+
+    //     const key_array = Array.from(cursor)
+    //     key_array.sort((a, b) => {
+    //         const a_datetime = a.check_timestamp
+    //         const b_datetime = b.check_timestamp
+
+    //         return a_datetime.getTime - b_datetime.getTime
+    //     })
+
+
+    // }
+}
 
 export class SlopDB {
     version: number
@@ -72,53 +128,8 @@ export class SlopDB {
         this.db = await this.open_promise
     }
 
-
+    get_check_cache() {
+        return new CheckCache(this, 256)
+    }
 }
 
-// export class CheckCache {
-//     slopdb: SlopDB
-//     cache_capacity: number
-//     static cache_objectstore_name = "checkcache"
-
-//     constructor(slopdb: SlopDB, max_entries: number) {
-//         this.slopdb = slopdb
-//         this.cache_capacity = max_entries
-//     }
-
-//     cache_item_factory(url: URL) {
-//         return {
-//             url: url,
-//             check_timestamp: Date.now()
-//         }
-//     }
-
-//     async evict_least_recently_checked(count: number) {
-//         const transaction = this.slopdb.start_transaction(CheckCache.cache_objectstore_name, "readwrite")
-//         const cache_objectstore = transaction.objectStore(CheckCache.cache_objectstore_name)
-
-//         const cursor_result_promise = new Promise<Iterable<any>>((resolve, reject) => {
-//             const cache_cursor_request = cache_objectstore.openCursor()
-
-//             cache_cursor_request.onerror = (error) => {
-//                 reject(error)
-//             }
-
-//             cache_cursor_request.onsuccess = (event) => {
-//                 const cursor = cache_cursor_request.result
-//                 resolve(new IDBCursorValueIterator(cursor))
-//             }
-//         })
-
-//         const cursor = await cursor_result_promise
-
-//         const key_array = Array.from(cursor)
-//         key_array.sort((a, b) => {
-//             const a_datetime = a.check_timestamp
-//             const b_datetime = b.check_timestamp
-
-//             return a_datetime.getTime - b_datetime.getTime
-//         })
-
-        
-//     }
-// }
